@@ -348,5 +348,101 @@ const terrainTypes = [
     ]},
 ];
 
+// const enemyTaxonomy = [
+//     // { name: "machine", },
+//     // { name: "golom", },
+//     // { name: "triber", },
+//     // {}
+// ]
 
+function createEnemy(level, terrain){
+
+}
+
+const tempZones = ["polar", "temperate", "tropical"];
+
+function createTerrain(level, coords){
+    const index = Math.floor(Math.random() * terrainTypes.length);
+    let terrrain;
+    terrrain.name = terrainTypes[index].name;
+    terrrain.zone = terrainTypes[index].zone;
+    terrrain.level = level;
+    terrrain.coords = coords;
+
+    if(terrrain.zone === undefined){
+        terrrain.zone = tempZones[Math.floor(Math.random * createEnemy.length)];
+    }
+    
+    return terrrain;
+}
+
+function createTerritory(level, coords){
+    let territory = {};
+    territory.terrain = createTerrain(level, coords);
+    territory.enemy = createEnemies(territory.terrain);
+    territory.treasures = createTreasures(territory.terrain);
+    
+}
+
+function createEnemies(terrain){
+    let roll = Math.floor(Math.random() * 100);
+    let level = terrain.level;
+    if(roll > 80){
+        level += (level * Math.floor(Math.random()));
+    }
+    let enemy = {
+        level: level,
+        canFly: trueOrFalse(50),
+        armor: withinRange(0, 5),
+        damage: withinRange(5, 10),
+        speed: withinRange(5, 10),
+        perception: withinRange(1, 5),
+
+    };
+
+}
+
+function trueOrFalse(propabilityTrue){
+    let roll = Math.floor(Math.random() * 100);
+    if(roll >= propabilityTrue){
+        return true;
+    }
+    return false;
+}
+
+function withinRange(min, max){
+    return Math.floor((Math.random()) * (max - min));
+}
+// function createTreasures(terrain){
+//     switch(terrain.name){
+
+//     }
+// }
+function createLands(rows, columns){
+    const lands = row * columns;
+    for(let a=0; a < lands; a++){
+
+    }
+}
 console.log(elements);
+
+creatureNames = [
+    "OLIVER", "JACK","HARRY","JACOB","CHARLIE","THOMAS","GEORGE","OSCAR","JAMES","WILLIAM",
+    "NOAH","ALFIE","JOSHUA","MUHAMMAD","HENRY","LEO","ARCHIE","ETHAN","JOSEPH","FREDDIE",
+    "SAMUEL","ALEXANDER","LOGAN","DANIEL","ISAAC","MAX","MOHAMMED","BENJAMIN","MASON","LUCAS",
+    "EDWARD","HARRISON","JAKE","DYLAN","RILEY","FINLEY","THEO","SEBASTIAN","ADAM","ZACHARY",
+    "ARTHUR","TOBY","JAYDEN","LUKE","HARLEY","LEWIS","TYLER","HARVEY","MATTHEW","DAVID","REUBEN",
+    "MICHAEL","ELIJAH","KIAN","TOMMY","MOHAMMAD","BLAKE","LUCA","THEODORE","STANLEY","JENSON",
+    "NATHAN","CHARLES","FRANKIE","JUDE","TEDDY","LOUIE","LOUIS","RYAN","HUGO","BOBBY","ELLIOTT",
+    "DEXTER","OLLIE","ALEX","LIAM","KAI","GABRIEL","CONNOR","AARON","FREDERICK","CALLUM","ELLIOT",
+    "ALBERT","LEON","RONNIE","RORY","JAMIE","AUSTIN","SETH","IBRAHIM","OWEN","CALEB","ELLIS",
+    "SONNY","ROBERT","JOEY","FELIX","FINLAY","JACKSON","AMELIA","OLIVIA","ISLA","EMILY","POPPY",
+    "AVA","ISABELLA","JESSICA","LILY","SOPHIE","GRACE","SOPHIA","MIA","EVIE","RUBY","ELLA","SCARLETT",
+    "ISABELLE","CHLOE","SIENNA","FREYA","PHOEBE","CHARLOTTE","DAISY","ALICE","FLORENCE","EVA","SOFIA",
+    "MILLIE","LUCY","EVELYN","ELSIE","ROSIE","IMOGEN","LOLA","MATILDA","ELIZABETH","LAYLA","HOLLY",
+    "LILLY","MOLLY","ERIN","ELLIE","MAISIE","MAYA","ABIGAIL","ELIZA","GEORGIA","JASMINE","ESME",
+    "WILLOW","BELLA","ANNABELLE","IVY","AMBER","EMILIA","EMMA","SUMMER","HANNAH","ELEANOR","HARRIET",
+    "ROSE","AMELIE","LEXI","MEGAN","GRACIE","ZARA","LACEY","MARTHA","ANN","VIOLET","DARCEY","MARIA",
+    "MARYAM","BROOKE","AISHA","KATIE","LEAH","THEA","DARCIE","HOLLIE","AMY","MOLLIE","HEIDI",
+    "LOTTIE","BETHANY","FRANCESCA","FAITH","HARPER","NANCY",
+]
