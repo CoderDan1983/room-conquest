@@ -2,6 +2,7 @@ const elements = [
     {
         name: "light", 
         req: "none",
+        color: "#ffffcc",
         branches: [
             { name: "fire", upgradeFee: 1 }, 
             { name: "light bending", upgradeFee: 1 }
@@ -13,7 +14,8 @@ const elements = [
     },
     {
         name: "light bending",
-        req: "light", 
+        req: "light",
+        color: "#ffffe6",
         abilities: [
             { name: "invisibility", type: "camo", upgradeFee: 1 },
             { name: "doppleganger", type: "camo", upgradeFee: 1 },
@@ -24,6 +26,7 @@ const elements = [
     {
         name: "fire",
         req: ["light", "thermal", "electric"],
+        color: "#cc3300",
         abilities: [
             { name: "refine by heat", type: "process", upgradeFee: 1 },
             { name: "fire resistance", type: "resistance", upgradeFee: 1 },
@@ -34,6 +37,7 @@ const elements = [
     {
         name: "thermal",
         req: "none",
+        color: "#b300b3",
         branches: [
             { name: "fire", upgradeFee: 1 }, 
             { name: "ice", upgradeFee: 1 }
@@ -45,6 +49,7 @@ const elements = [
     {
         name: "ice",
         req: ["thermal"],
+        color: "#66b3ff",    
         abilities: [
             { name: "cold storage", type: "process", upgradeFee: 1 },
             { name: "ice wall", type: "wall", upgradeFee: 1 },
@@ -56,6 +61,7 @@ const elements = [
     {
         name: "electricity",
         req: "none",
+        color: "#ffdb4d",    
         branches: [
             { name: "hacking", upgradeFee: 1 }, 
             { name: "fire", upgradeFee: 1 }
@@ -72,6 +78,7 @@ const elements = [
     {
         name: "hacking",
         req: ["electricity"],
+        color: "#ffcc00",
         abilities: [
             { name: "control", type: "???", upgradeFee: 1 },
             { name: "camera feed", type: "perception", upgradeFee: 1 },
@@ -81,6 +88,7 @@ const elements = [
     {
         name: "quantum",
         req: "none",
+        color: "#9966ff",
         branches: [
             { name: "temporal", upgradeFee: 1 }, 
             { name: "spacial", upgradeFee: 1 }
@@ -94,6 +102,7 @@ const elements = [
     {
         name: "earth",
         req: "none",
+        color: "#996633",
         branches: [
             { name: "metal", upgradeFee: 1 }, 
         ],
@@ -107,6 +116,7 @@ const elements = [
     {
         name: "metal",
         req: "earth",
+        color: "#999999",
         abilities: [
             { name: "metal mine", type: "process", upgradeFee: 1 },
             { name: "metal blast", type: "attack", upgradeFee: 1 },
@@ -118,6 +128,7 @@ const elements = [
     {
         name: "temporal",
         req: "quantum",
+        color: "#4c00e6",
         abilities: [
             { name: "speed", type: "boost", upgradeFee: 1 },
             { name: "time stop", type: "???", upgradeFee: 1 },
@@ -129,6 +140,7 @@ const elements = [
     {
         name: "spacial",
         req: "quantum",
+        color: "#330099",
         abilities: [
             { name: "teleportation", type: "movement", upgradeFee: 1 },
             { name: "teleporting dodge", type: "camo", upgradeFee: 1 },
@@ -141,6 +153,7 @@ const elements = [
     {
         name: "telekenesis",
         req: "none",
+        color: "#000099",
         abilities: [
             { name: "ecolocation", type: "perception", upgradeFee: 1 },
             { name: "tk blast", type: "attack", upgradeFee: 1 },
@@ -153,6 +166,7 @@ const elements = [
     {
         name: "water",
         req: "none",
+        color: "#0066ff",
         branches: [
             { name: "ice", upgradeFee: 1 }, 
         ],
@@ -169,6 +183,7 @@ const elements = [
     {
         name: "mental",
         req: ["telekenesis", "life"],
+        color: "#cccccc",
         abilities: [
             { name: "mind control", req: "sense other minds", type: "control", upgradeFee: 1 },
             { name: "sense other minds", type: "perception", upgradeFee: 1 },
@@ -179,6 +194,7 @@ const elements = [
     {
         name: "life",
         req: "none",
+        color: "#99ff66",
         branches: [
             { name: "mental", upgradeFee: 1 }, 
             { name: "healing", upgradeFee: 1 }, 
@@ -188,6 +204,7 @@ const elements = [
     {
         name: "body modification",
         req: "life",
+        color: "#00ff00",
         abilities: [
             { name: "increased speed", type: "boost", upgradeFee: 1 },
             { name: "increased strength", type: "boost", upgradeFee: 1 },
@@ -200,6 +217,7 @@ const elements = [
     {
         name: "healing",
         req: "life",
+        color: "#66ff33",
         branches: [
             { name: "death", upgradeFee: 1 }, 
             { name: "plants", upgradeFee: 1 }, 
@@ -217,6 +235,7 @@ const elements = [
     {
         name: "death",
         req: "life",
+        color: "#000",
         abilities: [
             { name: "death blast", type: "attack", upgradeFee: 1 },
             { name: "death wave", type: "aoe", upgradeFee: 1 },
@@ -226,6 +245,7 @@ const elements = [
     {
         name: "plants",
         req: "heal",
+        color: "#99cc00",
         abilities: [
             { name: "poison immunity", type: "resistance", upgradeFee: 1 },
             { name: "poison creation", type: "process", upgradeFee: 1 },
@@ -236,7 +256,97 @@ const elements = [
             { name: "plant sense", type: "preception", upgradeFee: 1 },
         ]
     },
-]
+];
+
+const terrainTypes = [
+    { name: "desert", zone: "tropical", effect: [
+        { name: "plants", effect: -1 },
+        { name: "water", effect: -2 },
+        { name: "ice", effect: -1 },
+        { name: "fire", effect: 1 },
+        { name: "light", effect: 1 },
+    ]},
+    { name: "jungle", zone: "tropical", effect: [
+        { name: "fire", effect: 1 },
+        { name: "ice", effect: -1 },
+        { name: "water", effect: 1 },
+        { name: "plant", effect: 1 },
+        { name: "light", effect: -1 },
+    ]},
+    { name: "wasteland", effect: [
+        { name: "life", effect: -1 },
+        { name: "plants", effect: -1 },
+        { name: "water", effect: -1 },
+    ]},
+    { name: "city ruins", effect: [
+        { name: "life", effect: -1 },
+        { name: "plants", effect: -1 },
+        { name: "electricity", effect: 1 },
+        { name: "hacking", effect: 1 },
+    ]},
+    { name: "forest", zone: "temperate", effect: [
+        { name: "light", effect: -1 },
+        { name: "life", effect: 1 },
+        { name: "plants", effect: 1 },
+    ]},
+    { name: "lightening zone", effect: [
+        { name: "plants", effect: -1 },
+        { name: "electricity", effect: 2 },
+        { name: "hacking", effect: 1 },
+    ]},
+    { name: "rock zone", effect: [
+        { name: "earth", effect: 1 },
+        { name: "metal", effect: 1 },
+        { name: "life", effect: -1 },
+        { name: "plants", effect: -1 },
+    ]},
+    { name: "volcano zone", zone: "tropical", effect: [
+        { name: "earth", effect: 1 },
+        { name: "metal", effect: 1 },
+        { name: "fire", effect: 2 },
+        { name: "ice", effect: -2 },
+        { name: "water", effect: -2 },
+    ]},
+    { name: "ocean", effect: [
+        { name: "fire", effect: -1 },
+        { name: "water", effect: 2 },
+        { name: "plants", effect: 1 },
+        { name: "light", effect: 1 },
+
+        { name: "light bending", effect: 1 },
+        { name: "electricity", effect: 1 },
+        { name: "earth", effect: -1 },
+    ]},
+    { name: "lake", effect: [
+        { name: "fire", effect: -1 },
+        { name: "water", effect: 2 },
+        { name: "plants", effect: 1 },
+        { name: "light", effect: 1 },
+
+        { name: "light bending", effect: 1 },
+        { name: "electricity", effect: 1 },
+        { name: "earth", effect: -1 },
+    ]},
+    { name: "artic tundra", zone: "polar", effect: [
+        { name: "ice", effect: 1 },
+        { name: "fire", effect: -1 },
+        { name: "plants", effect: -1 },
+    ]},
+    { name: "polar cap", zone: "polar", effect: [
+        { name: "ice", effect: 2 },
+        { name: "fire", effect: -2 },
+        { name: "plants", effect: -2 },
+    ]},
+    { name: "space", zone: "polar", effect: [
+        { name: "plants", effect: -3 },
+        { name: "ice", effect: 2 },
+        { name: "fire", effect: -3 },
+        { name: "telekenesis", effect: 1 },
+        { name: "spacial", effect: 2 },
+        { name: "temporal", effect: 1 },
+        { name: "metal", effect: 1 },
+    ]},
+];
 
 
 console.log(elements);
