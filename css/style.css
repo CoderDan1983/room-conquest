@@ -9,3 +9,17 @@
 div {
     background-color: red;
 }
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: repeat(10, 10%);
+
+    width: 1000px;
+    height: 1000px;
+}
+
+.territory {
+    background-color: #fff;
+    border: 1px black solid;
+}
