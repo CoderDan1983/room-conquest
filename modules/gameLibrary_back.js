@@ -1,11 +1,12 @@
 const elements = [
     {
         name: "light", 
+        upgradeFee: 2.5,
         req: "none",
         color: "#ffffcc",
         branches: [
-            { name: "fire", upgradeFee: 1 }, 
-            { name: "light bending", upgradeFee: 1 }
+            { name: "fire" }, 
+            { name: "light bending" }
         ], 
         abilities: [
             { name: "light", type: "???", upgradeFee: 1 },
@@ -14,6 +15,7 @@ const elements = [
     },
     {
         name: "light bending",
+        upgradeFee: 1,
         req: "light",
         color: "#ffffe6",
         abilities: [
@@ -25,6 +27,7 @@ const elements = [
     },
     {
         name: "fire",
+        upgradeFee: 1,
         req: ["light", "thermal", "electric"],
         color: "#cc3300",
         abilities: [
@@ -36,11 +39,12 @@ const elements = [
     },
     {
         name: "thermal",
+        upgradeFee: 2,
         req: "none",
         color: "#b300b3",
         branches: [
-            { name: "fire", upgradeFee: 1 }, 
-            { name: "ice", upgradeFee: 1 }
+            { name: "fire" }, 
+            { name: "ice" }
         ],
         abilities: [
             { name: "thermal sense", type: "perception", upgradeFee: 1 },
@@ -48,6 +52,7 @@ const elements = [
     },
     {
         name: "ice",
+        upgradeFee: 1,
         req: ["thermal"],
         color: "#66b3ff",    
         abilities: [
@@ -60,11 +65,12 @@ const elements = [
     },
     {
         name: "electricity",
+        upgradeFee: 3,
         req: "none",
         color: "#ffdb4d",    
         branches: [
-            { name: "hacking", upgradeFee: 1 }, 
-            { name: "fire", upgradeFee: 1 }
+            { name: "hacking" }, 
+            { name: "fire" }
         ],
         abilities: [
             { name: "electricute", type: "aoe", upgradeFee: 1 },
@@ -77,6 +83,7 @@ const elements = [
     },
     {
         name: "hacking",
+        upgradeFee: 1,
         req: ["electricity"],
         color: "#ffcc00",
         abilities: [
@@ -87,11 +94,12 @@ const elements = [
     },
     {
         name: "quantum",
+        upgradeFee: 3,
         req: "none",
         color: "#9966ff",
         branches: [
-            { name: "temporal", upgradeFee: 1 }, 
-            { name: "spacial", upgradeFee: 1 }
+            { name: "temporal" }, 
+            { name: "spacial" }
         ],
         abilities: [
             { name: "quantum blast", type: "attack", upgradeFee: 1 },
@@ -101,10 +109,11 @@ const elements = [
     },
     {
         name: "earth",
+        upgradeFee: 2,
         req: "none",
         color: "#996633",
         branches: [
-            { name: "metal", upgradeFee: 1 }, 
+            { name: "metal" }, 
         ],
         abilities: [
             { name: "rock blast", type: "attack", upgradeFee: 1 },
@@ -115,6 +124,7 @@ const elements = [
     },
     {
         name: "metal",
+        upgradeFee: 1,
         req: "earth",
         color: "#999999",
         abilities: [
@@ -127,6 +137,7 @@ const elements = [
     },
     {
         name: "temporal",
+        upgradeFee: 1,
         req: "quantum",
         color: "#4c00e6",
         abilities: [
@@ -139,6 +150,7 @@ const elements = [
     },
     {
         name: "spacial",
+        upgradeFee: 1,
         req: "quantum",
         color: "#330099",
         abilities: [
@@ -152,6 +164,7 @@ const elements = [
     },
     {
         name: "telekenesis",
+        upgradeFee: 1,
         req: "none",
         color: "#000099",
         abilities: [
@@ -165,10 +178,11 @@ const elements = [
     },
     {
         name: "water",
+        upgradeFee: 2,
         req: "none",
         color: "#0066ff",
         branches: [
-            { name: "ice", upgradeFee: 1 }, 
+            { name: "ice" }, 
         ],
         abilities: [
             { name: "water creation", type: "???", upgradeFee: 1 },
@@ -182,6 +196,7 @@ const elements = [
     },
     {
         name: "mental",
+        upgradeFee: 1,
         req: ["telekenesis", "life"],
         color: "#cccccc",
         abilities: [
@@ -193,16 +208,18 @@ const elements = [
     },
     {
         name: "life",
+        upgradeFee: 3,
         req: "none",
         color: "#99ff66",
         branches: [
-            { name: "mental", upgradeFee: 1 }, 
-            { name: "healing", upgradeFee: 1 }, 
-            { name: "body modification", upgradeFee: 1 }, 
+            { name: "mental" }, 
+            { name: "healing" }, 
+            { name: "body modification" }, 
         ],
     },
     {
         name: "body modification",
+        upgradeFee: 1,
         req: "life",
         color: "#00ff00",
         abilities: [
@@ -216,11 +233,12 @@ const elements = [
     },
     {
         name: "healing",
+        upgradeFee: 3,
         req: "life",
         color: "#66ff33",
         branches: [
-            { name: "death", upgradeFee: 1 }, 
-            { name: "plants", upgradeFee: 1 }, 
+            { name: "death" }, 
+            { name: "plants" }, 
         ],
         abilities: [
             { name: "self heal", type: "heal", upgradeFee: 1 },
@@ -234,6 +252,7 @@ const elements = [
     },
     {
         name: "death",
+        upgradeFee: 1,
         req: "life",
         color: "#000",
         abilities: [
@@ -244,6 +263,7 @@ const elements = [
     },
     {
         name: "plants",
+        upgradeFee: 1,
         req: "heal",
         color: "#99cc00",
         abilities: [
@@ -257,6 +277,28 @@ const elements = [
         ]
     },
 ];
+
+function getUpgradeFee(elements, elementName){
+    for (let e=0; e < elements.length; e++){
+        if(elements[e].name === elementName){
+            return elements[e].upgradeFee;
+        }
+    }
+    return -1;
+}
+
+function addUpgradeFees(array){
+    for(let a=0; a < array.length; a++){ //looping the object array
+        for(prop in array[a]){ //looping each object in the array
+            if(prop === "branches"){ //matching the property in the object.
+                let miniArray = array[a][prop];
+                for(let m=0; m < miniArray; m++){
+                    miniArray[m].upgradeFee = getUpgradeFee(array, miniArray[m].name);
+                }
+            }
+        }
+    }
+}
 
 const terrainTypes = [
     { name: "desert", zone: "tropical", effect: [
@@ -374,4 +416,5 @@ module.exports = {
     elements: elements,
     terrainTypes: terrainTypes,
     names: names,
+    getUpgradeFee: getUpgradeFee,
 }
