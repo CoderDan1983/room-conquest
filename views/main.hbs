@@ -4,11 +4,22 @@
     <label for="charName">Character Name</label>
     <input type="text" name="charName" id="charName">
 
-    <label for="characterClass"></label>
+    <label for="addPowerClass">Add Power Class</label>
+    <select name="addPowerClass" id="addPowerClass">
+    </select>
+    <div>
+        <div>Price: </div>
+        <div id="elementPrice"></div>
+    </div>
+
+    <br>
+    <div>
+        <div>Points Remaining: </div>
+        <div id="pointsRemaining"></div>
+    </div>
 </form>
 
 <div id="board" class="board">
-
 </div>
 
-<script src="./src/index.js"></script>
+<script type="module" src="./src/index.js"></script>

@@ -3,6 +3,8 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+const { elements, terrainTypes, names } = require('./modules/gameLibrary_back.js');
+
 require('dotenv').config();
 
 app.use(express.static(path.join(__dirname, './')));
@@ -24,10 +26,16 @@ app.set('view engine', 'hbs');
 
 //"routes" :D
 app.get('/', (req, res)=>{
-    res.render('main', { layout: 'index' })
+    res.render('main', { layout: 'index', eleemnts: elements, terrainTypes: terrainTypes, names: names })
 })
 
 
 app.listen(PORT, ()=>{
+    // console.log(elements);
+    // console.log('..............');
+    // console.log(terrainTypes);
+    // console.log('...............');
+    // console.log(names);
+    // console.log('............')
     console.log(`Server running on port ${PORT} `);
 })

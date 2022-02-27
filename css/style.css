@@ -22,4 +22,11 @@ div {
 .territory {
     background-color: #fff;
     border: 1px black solid;
+    color: #000;
+}
+
+.fogOfWar {
+    background-color: #000;
+    border: 1px black solid;
+    color: #fff;
 }
