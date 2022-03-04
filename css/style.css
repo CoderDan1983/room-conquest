@@ -4,11 +4,25 @@
     border-radius: 16px;
     margin: 8px;
     padding: 12px;
+
+    grid-template-columns: auto;
+    grid-template-rows: auto;
 }
 
-div {
-    background-color: red;
+.addSelectClass {
+    display: grid;
+    grid-template-columns: 15% 30% 5% 10%;
+    grid-template-rows: auto;
+
+    background-color: rgb(114, 114, 160);
+    margin: 6px;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px rgb(102, 102, 167) solid;
 }
+/* div {
+    background-color: red;
+} */
 
 .board {
     display: grid;
@@ -29,4 +43,45 @@ div {
     background-color: #000;
     border: 1px black solid;
     color: #fff;
+}
+
+.invisible {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+.powerContainer {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+
+    border-radius: 6px;
+    margin: 4px;
+    padding: 8px;
+
+    color: black;
+    /* opacity: .3; */
+}
+
+.powerTitle {
+    font-weight: bold;
+}
+.abilitiesContainer {
+
+}
+
+.abilitiesContainer, .abilityContainer {
+
+}
+
+.abilityContainer {
+    display: grid;
+    grid-template-columns: auto 120px;
+
+    border-radius: 4px;
+    margin: 4px;
+    padding: 4px;
 }

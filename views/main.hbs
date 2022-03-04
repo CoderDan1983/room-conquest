@@ -1,23 +1,54 @@
 <h1>Room Conquest</h1>
 
 <form id="playerStats" class="form">
-    <label for="charName">Character Name</label>
-    <input type="text" name="charName" id="charName">
-
-    <label for="addPowerClass">Add Power Class</label>
-    <select name="addPowerClass" id="addPowerClass">
-    </select>
     <div>
-        <div>Price: </div>
-        <div id="elementPrice"></div>
+        <label for="charName">Character Name</label>
+        <input type="text" name="charName" id="charName">
     </div>
-    <button id="buyPowerClass">Purchase</button>
 
-    <br>
+    <div class="addSelectClass">
+        <label for="addPowerClass">Add Power Class</label>
+        <select name="addPowerClass" id="addPowerClass">
+            
+        </select>
+        <div>
+            <div>Price: </div>
+            <div id="elementPrice"></div>
+        </div>
+        <button id="buyPowerClass">Purchase</button>
+        <br>
+    </div>
+
+    <div  class="addSelectClass">
+        <label for="addAbility">Add Ability</label>
+        <select name="addAbility" id="addAbility">
+        </select>
+        <div>
+            <div>Price: </div>
+            <div id="abilityPrice"></div>
+        </div>
+        <button id="buyAbility">Purchase</button>
+        <br>
+    </div>
+
+    {{!-- <div class="addSelectClass">
+        <label for="addAbilityLevel">Add Level</label>
+        <select name="addAbilityLevel" id="addAbilityLevel">
+        </select>
+        <div>
+            <div>Price: </div>
+            <div id="levelPrice"></div>
+        </div>
+        <button id="buyLevel">Purchase</button>
+        <br>
+    </div> --}}
+
     <div>
         <div>Points Remaining: </div>
         <div id="pointsRemaining">
         </div>
+        <button id="playerStatsToggle" class="visible">See Player Stats</button>
+        <div id="playerStats0" class="invisible"></div>
     </div>
 </form>
 
