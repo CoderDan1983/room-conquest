@@ -418,10 +418,17 @@ let player = {
     }
 }
 
+let currentOrders = { //holds orders
+
+}
+
 //FUNCTIONS
-function displayPlayer(parentElement, player, elementArray){
+function displayPlayer(parentElement, pointsRDisplay,player, elementArray){
     if(typeof parentElement === 'string'){
         parentElement = document.getElementById(parentElement);
+    }
+    if(typeof pointsRDisplay === 'string'){
+        pointsRDisplay = document.getElementById(pointsRDisplay);
     }
     removeAllChildren(parentElement);
     
@@ -467,17 +474,29 @@ function displayPlayer(parentElement, player, elementArray){
                 upgradeB.addEventListener('click', (event)=>{
                     event.preventDefault();
                     
-                    let level = getPlayerLevel(ability.name)
+                    let level = getPlayerLevel(ability.name);
+                    const fee = getFullAbility(ability.name).upgradeFee;
                     if(level < 10){
-                        alert(`upgrade ${ability.name} to level ${level + 1} for ${ability.upgradeFee} points?`);
-                        for(let a=0; a < player.abilityLevels.length; a++){
-                            if(player.abilityLevels[a].name == ability.name){
-                                player.abilityLevels[a].level++;
+                        if(player.investmentPoints >= fee){
+                            alert(`upgrade ${ability.name} to level ${level + 1} for ${ability.upgradeFee} points?`);
+                            for(let a=0; a < player.abilityLevels.length; a++){
+                                if(player.abilityLevels[a].name == ability.name){
+                                    player.abilityLevels[a].level++;
+                                    player.investmentPoints -= fee;
+                                    pointsRDisplay.textContent = player.investmentPoints;
+                                    break;
+                                }
                             }
+                            console.log('logging player: ');
+                            console.log(player);
+                            displayPlayer("playerStats0", "pointsRemaining", player, elements);                            
                         }
-                        console.log('logging player: ');
-                        console.log(player);
-                        displayPlayer("playerStats0", player, elements);
+                        else {
+                            alert("get more points to upgrade!")
+                        }
+                    }
+                    else{
+                        alert("already at max level!");
                     }
                     
                 })
@@ -534,9 +553,7 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
     }
     elementName.addEventListener('click', (event)=>{
         event.preventDefault();
-        if(currentOrders[orderCat]){
-            // console.log('looking for ' + currentOrders[orderCat].product + ' in: ');
-            // console.log(player.branches);
+        if(currentOrders[orderCat]){  
             if(findInArray(player[playerCat], currentOrders[orderCat].product) === false){ // * only purchase product if we don't have it
                 if(player.investmentPoints >= currentOrders[orderCat].price){ // * if we can purchase
                     player.investmentPoints -= currentOrders[orderCat].price; //* ...charge it :)
@@ -549,13 +566,13 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
                     if(orderCat === "element"){
                         loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", "elementPrice", "addPowerClass"); //reset element selector ^_^
                         loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
-                        displayPlayer("playerStats0", player, elements);
+                        displayPlayer("playerStats0", "pointsRemaining", player, elements);
                     }
                     else if(orderCat === "ability"){
                         loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
-                        displayPlayer("playerStats0", player, elements);
+                        displayPlayer("playerStats0", "pointsRemaining", player, elements);
                     }
-                    priceDisplay.textContent = ""; //reset price display
+                    priceDisplay.textContent = ""; //* reset price display
                 }
                 else{
                     alert("sorry, but you do not have enough points to research " + currentOrders[orderCat].product);
@@ -577,7 +594,7 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
             alert('please select an element to purchase :) ');
         }
         if(orderCat == "ability"){ // * to keep all the clickers from going off.  ^_^
-            //console.log('After purchase, player is: ');
+            console.log('After purchase, player is: ');
             console.log(player);
         }
     })
@@ -606,7 +623,7 @@ function addUpgradeFees(array){
     }
 }
 
-function getFullAbility(ability){ //returns full ability! :D
+function getFullAbility(ability){ //* returns full ability! :D
     let abils;
     for(let e=0; e < elements.length; e++){
         abils = elements[e].abilities;
@@ -744,6 +761,7 @@ function removeAllChildren(element){
 //the frontend version ^_^
 export {
     player, 
+    currentOrders, 
     terrainTypes,
     names,
     attackStyle,
