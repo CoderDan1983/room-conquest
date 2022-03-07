@@ -3,8 +3,15 @@
         <h1>Room Conquest</h1>
     </div>
     
-    <div id="side" class="sidebar">
-        Hi, how are you?
+    <div id="side" class="side">
+
+        <button id="toggleTerritories">Hide Territories</button>
+        <div id="territoryDisplay" class="sidebar"></div>
+
+        <button id="togglePlayer">Show Player Stats</button>
+        <div id="playerDisplay" style="display:none;"></div>
+        <div id="pointsRemainingSide"></div>
+        <button id="battleButton">Battle</button>
     </div>
 
     <div id="main" class="mainContainer">
@@ -63,7 +70,7 @@
             </div>
         </form>
 
-        <div id="board" class="invisible">
+        <div id="board" class="board" style="display:none;">
         </div>
     </div>
 </div>

@@ -1,15 +1,18 @@
 import {
     player, currentOrders, terrainTypes, names, attackStyle, tempZones, elements,
-    displayPlayer, loadPowerClassSelector, makePurchaseButton, //big functions
-    getUpgradeFee, addUpgradeFees, getFullAbility, getFullPowerClass, getPlayerLevel, //helpers
+    displayPlayer, loadPowerClassSelector, makePurchaseButton, logTerritory, makeToggleButton, //big functions
+    addStyles, getUpgradeFee, addUpgradeFees, getFullAbility, getFullPowerClass, getPlayerLevel, //helpers
     allowedAbilities, findInArray, allowedElements, elementPreReqMet, removeAllChildren,
 } from '../modules/gameLibrary_front.js';
 
+const playerStatsDisplayInfo = [{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}];
 
-makeToggleButton("playerStatsToggle", "playerStats0", "See Player Stats", "Hide Player Stats", 
-{ funct: displayPlayer, params: ["playerStats0", "pointsRemaining", player, elements] })
+makeToggleButton("playerStatsToggle", ["playerStats0"], "See Player Stats", "Hide Player Stats", 
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, ["pointsRemaining"], player] });
 
-displayPlayer("playerStats0", "pointsRemaining", player, elements);
+
+displayPlayer(playerStatsDisplayInfo, ["pointsRemaining"], player);
+
 
 const startGameB = document.getElementById("startGameB");
 startGameB.addEventListener('click', (event)=>{
@@ -17,9 +20,7 @@ startGameB.addEventListener('click', (event)=>{
     const board = document.getElementById("board");
     const playerStatsForm = document.getElementById("playerStatsForm");
     board.className = "board";
-    board.style.display = "inherited";
-    playerStatsForm.className = "invisible";
-
+    board.style.display = "grid"; //* referenced this from the board class
     startGame();
 });
 
@@ -27,15 +28,17 @@ function startGame(){
 
 }
 
-loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
-loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", "elementPrice", "addPowerClass");
-makePurchaseButton("buyAbility", "ability", "abilities", "abilityPrice");
-makePurchaseButton("buyPowerClass", "element", "branches", "elementPrice");
+loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility");
+loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", ["elementPrice"], "addPowerClass");
+makePurchaseButton("buyAbility", "ability", "abilities", ["abilityPrice"], "main"); //* abilities and powerClasses can only be purchased from the main menu?
+makePurchaseButton("buyPowerClass", "element", "branches", ["elementPrice"], "main");
 
 document.getElementById("pointsRemaining").textContent = player.investmentPoints; //.toString(); //??
 
-
-
+//*sidebar 
+makeToggleButton("toggleTerritories", ["territoryDisplay"], "See Territories", "Hide Territories");
+makeToggleButton("togglePlayer", ["playerDisplay"], "See Player Stats", "Hide Player Stats",
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, ["pointsRemaining"], player] });
 
 //other stuff below, so to speak! ^_^
 
@@ -220,107 +223,6 @@ function randomFromArray(array){
 let territories = [];
 let enemyList = [];
 
-function addStyles(element, styleObj){ //* add specialized styling to an element :)
-    if(typeof(element) == 'string'){
-        element = document.getElementById(element);
-    }
-
-    for(let prop in styleObj){
-        element.style[prop] = styleObj[prop];
-    }
-};
-
-function makeToggleButton(toggleButton, toggledElement, showText, hideText, functObj) {
-    //^ requires invisible and visible classes!
-    if(typeof(toggleButton) == 'string'){
-        toggleButton = document.getElementById(toggleButton);
-    }
-    if(typeof(toggledElement) == 'string'){
-        toggledElement = document.getElementById(toggledElement);
-    }
-
-    toggleButton.addEventListener('click', (event)=>{
-        event.preventDefault();        
-
-        if(toggledElement.style.display == "none"){
-            toggledElement.style.display = 'initial';
-            toggleButton.textContent = hideText;
-        }
-        else{
-            toggledElement.style.display = "none";
-            toggleButton.textContent = showText;
-        }
-        
-        if(typeof(functObj) !== undefined){
-            functObj.funct( ...functObj.params);
-        }
-    });
-}
-
-function logTerritory(parentElement, object, kind, stylingObj, noLogList){    
-    //^ uses findInArray, addStyles, removeAllChildren
-    const { Prop, Value, KeyValue, TitleTop } = stylingObj;
-    
-    if(kind === "outside"){ //* useful for testing :)
-        console.log('logging outside object: ');
-        console.log(object);
-    }
-    if(typeof(parentElement) == 'string'){
-        parentElement = document.getElementById(parentElement); //* this is probably the container if "inside"
-    }
-    if(typeof(object) == 'object'){
-        let container, proppy, valley, val;
-        if(kind == "outside"){
-            removeAllChildren(parentElement);
-        }
-        
-        //if(typeof(object) !== HTMLElement){
-            for(let prop in object){
-                //* if there is no noLogList or prop is not found in the noLogList...
-                if((typeof(noLostList) == undefined)||(findInArray(noLogList, prop) == false)){
-                    container = document.createElement("div");
-                    if(stylingObj!== undefined){
-                        container.className = KeyValue.class;
-                        addStyles(container, KeyValue.extra);
-                    }
-                    parentElement.appendChild(container);
-                    val = object[prop]; 
-
-                    proppy = document.createElement("div");
-                    if(stylingObj!== undefined){
-                        proppy.className = Prop.class;
-                        addStyles(proppy, Prop.extra);
-                    }
-                    proppy.textContent += `${prop}: `;
-                    container.appendChild(proppy);
-
-                    if(typeof(val) != 'object'){
-                        valley = document.createElement("div");
-                        if(stylingObj!== undefined){
-                            valley.className = Value.class;
-                            addStyles(valley, Value.extra);
-                        }
-                        valley.textContent = object[prop];
-                        container.appendChild(valley);
-                    }
-                    else{ //* for those with an object inside, so to speak.
-                        const objectContainer = document.createElement("div");
-                        if(stylingObj!== undefined){
-                            objectContainer.className = KeyValue.class;
-                            addStyles(objectContainer, KeyValue.extra);
-                            container.className = TitleTop.class; //* change parent container class! :D
-                            addStyles(container, TitleTop.extra);
-                        }
-                        container.appendChild(objectContainer);
-                        
-
-                        logTerritory(objectContainer, object[prop], "inside", stylingObj, ['el']); //*automatically appends to parent :D //container
-                    }
-                }
-            }
-        //}
-    }
-}
 function createTerritories(rows, columns){
     const lands = rows * columns;
 
@@ -362,7 +264,7 @@ function createTerritories(rows, columns){
             terry.el.addEventListener('click', (event)=>{
                 //alert(`${row}, ${column}`); //* this gives inaccurate info, so to speak.
                 console.log(territories[a]);
-                logTerritory("side", territories[a], "outside", styling, ['el']);
+                logTerritory("territoryDisplay", territories[a], "outside", styling, ['el']);
             });
             board.appendChild(terry.el);
         }

@@ -422,106 +422,117 @@ let currentOrders = { //holds orders
 
 }
 
-//FUNCTIONS
-function displayPlayer(parentElement, pointsRDisplay,player, elementArray){
-    if(typeof parentElement === 'string'){
-        parentElement = document.getElementById(parentElement);
-    }
-    if(typeof pointsRDisplay === 'string'){
-        pointsRDisplay = document.getElementById(pointsRDisplay);
-    }
-    removeAllChildren(parentElement);
-    
-    let powerContainer, abilitiesContainer, inst, abilityContainer, abilityTitle, abil, upgradeB;
-    let power;
+//
+// function displayPlayer(parentElement, investmentRemainingArr, suffix, player, elementArray){
+function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgraded price display
 
-    for(let b=0; b < player.branches.length; b++){
-        power = getFullPowerClass(player.branches[b]);
-        powerContainer = document.createElement("div"); //container
-        powerContainer.className = "powerContainer";
-        powerContainer.id = `powerContainer_${player.branches[b]}`;
-        powerContainer.style.backgroundColor =`${power.color}44`;
-        parentElement.appendChild(powerContainer);
-
-        inst = document.createElement("div"); //title
-        inst.className = "powerTitle";
-        inst.textContent = player.branches[b];
-        powerContainer.appendChild(inst);
-
-        abilitiesContainer = document.createElement("div");
-        abilitiesContainer.className = "abilitiesContainer";
-        powerContainer.appendChild(abilitiesContainer);
-
-        for(let a=0; a < player.abilities.length; a++){
-            const ability = getFullAbility(player.abilities[a]); //this gets default stats.
-            let playerLevel = getPlayerLevel(ability.name); //this gets player's real level for that ability!
-            // console.log(player.branches[b]);
-            // console.log(' vs ' );
-            // console.log(ability.parent);
-            if(player.branches[b] == ability.parent){
-                abilityContainer = document.createElement("div");
-                abilityContainer.className = "abilityContainer";
-                abilityContainer.style.backgroundColor =`${power.color}44`;
-                abilityContainer.id = `abilityContainer_${ability.name}`;
-                abilitiesContainer.appendChild(abilityContainer);
-
-                abilityTitle = document.createElement("div");
-                abilityTitle.textContent = `name: ${ability.name}, type: ${ability.type}, upgradeFee: ${ability.upgradeFee}, level: ${playerLevel}`;
-                abilityContainer.appendChild(abilityTitle);
-
-                upgradeB = document.createElement("button");
-                upgradeB.textContent = "Upgrade";
-                upgradeB.addEventListener('click', (event)=>{
-                    event.preventDefault();
-                    
-                    let level = getPlayerLevel(ability.name);
-                    const fee = getFullAbility(ability.name).upgradeFee;
-                    if(level < 10){
-                        if(player.investmentPoints >= fee){
-                            alert(`upgrade ${ability.name} to level ${level + 1} for ${ability.upgradeFee} points?`);
-                            for(let a=0; a < player.abilityLevels.length; a++){
-                                if(player.abilityLevels[a].name == ability.name){
-                                    player.abilityLevels[a].level++;
-                                    player.investmentPoints -= fee;
-                                    pointsRDisplay.textContent = player.investmentPoints;
-                                    break;
-                                }
-                            }
-                            console.log('logging player: ');
-                            console.log(player);
-                            displayPlayer("playerStats0", "pointsRemaining", player, elements);                            
-                        }
-                        else {
-                            alert("get more points to upgrade!")
-                        }
-                    }
-                    else{
-                        alert("already at max level!");
-                    }
-                    
-                })
-                abilityContainer.appendChild(upgradeB);
-                // { name: "self heal", type: "heal", upgradeFee: 1, level: 1 },
-            }
+    for(let p=0; p < investmentRemainingArr.length; p++){
+        if(typeof(investmentRemainingArr[p]) == 'string'){
+            investmentRemainingArr[p] = document.getElementById(investmentRemainingArr[p]);
         }
+    }
+    for(let g=0; g < groupArr.length; g++){ 
+        if(typeof(groupArr[g].parent) == 'string'){ //*make sure we are referencing all the elements :)
+            groupArr[g].parent = document.getElementById(groupArr[g].parent);
+        }
+        
+        removeAllChildren(groupArr[g].parent);
+        
+        let powerContainer, abilitiesContainer, inst, abilityContainer, abilityTitle, abil, upgradeB;
+        let power;
 
+        for(let b=0; b < player.branches.length; b++){
+            power = getFullPowerClass(player.branches[b]);
+            powerContainer = document.createElement("div"); //container
+            powerContainer.className = "powerContainer";
+            powerContainer.id = `powerContainer_${player.branches[b]}_${groupArr[g].suffix}`;
+            powerContainer.style.backgroundColor =`${power.color}44`;
+            groupArr[g].parent.appendChild(powerContainer);
+
+            inst = document.createElement("div"); //title
+            inst.className = "powerTitle";
+            inst.textContent = player.branches[b];
+            powerContainer.appendChild(inst);
+
+            abilitiesContainer = document.createElement("div");
+            abilitiesContainer.className = "abilitiesContainer";
+            powerContainer.appendChild(abilitiesContainer);
+
+            for(let a=0; a < player.abilities.length; a++){
+                const ability = getFullAbility(player.abilities[a]); //* this gets default stats.
+                let playerLevel = getPlayerLevel(ability.name); //* this gets player's real level for that ability!
+                if(player.branches[b] == ability.parent){
+                    abilityContainer = document.createElement("div");
+                    abilityContainer.className = "abilityContainer";
+                    abilityContainer.style.backgroundColor =`${power.color}44`;
+                    abilityContainer.id = `abilityContainer_${ability.name}_${groupArr[g].suffix}`;
+                    abilitiesContainer.appendChild(abilityContainer);
+
+                    abilityTitle = document.createElement("div");
+                    abilityTitle.textContent = `name: ${ability.name}, type: ${ability.type}, upgradeFee: ${ability.upgradeFee}, level: ${playerLevel}`;
+                    abilityContainer.appendChild(abilityTitle);
+
+                    upgradeB = document.createElement("button");
+                    upgradeB.textContent = "Upgrade";
+                    upgradeB.addEventListener('click', (event)=>{
+                        event.preventDefault();
+                        
+                        let level = getPlayerLevel(ability.name);
+                        const fee = getFullAbility(ability.name).upgradeFee;
+                        if(level < 10){
+                            if(player.investmentPoints >= fee){
+                                alert(`upgrade ${ability.name} to level ${level + 1} for ${ability.upgradeFee} points?`);
+                                for(let a=0; a < player.abilityLevels.length; a++){
+                                    if(player.abilityLevels[a].name == ability.name){
+                                        player.abilityLevels[a].level++;
+                                        player.investmentPoints -= fee;
+                                        for(let p=0; p < investmentRemainingArr.length; p++){
+                                            if(typeof(investmentRemainingArr[p]) == 'string'){
+                                                investmentRemainingArr[p].textContent = player.investmentPoints;
+                                            }
+                                        }
+                                        
+                                        break;
+                                    }
+                                }
+                                console.log('logging player: ');
+                                console.log(player);
+                                displayPlayer(groupArr, investmentRemainingArr, player);                           
+                            }
+                            else {
+                                alert("get more points to upgrade!")
+                            }
+                        }
+                        else{
+                            alert("already at max level!");
+                        }
+                        
+                    })
+                    abilityContainer.appendChild(upgradeB);
+                    // { name: "self heal", type: "heal", upgradeFee: 1, level: 1 },
+                }
+            }
+
+        }
     }
 }
 
-//loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", "elementPrice", "addPowerClass")
-function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, priceDisplay, addName){
+function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, priceDisplayArr, addName){ //todo upgraded price display
     if(typeof(elementName) == 'string'){
         elementName = document.getElementById(elementName);
     }
-    if(typeof(priceDisplay) == 'string'){
-        priceDisplay = document.getElementById(priceDisplay);
+    for(let p=0; p < priceDisplayArr.length; p++){
+        if(typeof(priceDisplayArr[p]) == 'string'){
+            priceDisplayArr[p] = document.getElementById(priceDisplayArr[p]);
+        }
     }
+    
     const orderableSet = arrayFilter(array); // * get what elements are available for purchase //, player.investmentPoints
     
     removeAllChildren(addName);
     let option;
 
-    option = document.createElement("option"); //default message :D
+    option = document.createElement("option");
     option.value = "none";
     option.name = addName;
     option.textContent = `Please select an ${orderCat}`;
@@ -537,19 +548,24 @@ function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, price
         elementName.appendChild(option);
     }
     elementName.addEventListener('change', (event)=>{ // * displayPrice
-        priceDisplay.textContent = getUpgradeFee(orderableSet, event.target.value);
         const product = event.target.value;
-        const price = getUpgradeFee(orderableSet, event.target.value); //okay?
+        const price = getUpgradeFee(orderableSet, event.target.value);
+        for(let p=0; p < priceDisplayArr.length; p++){
+            priceDisplayArr[p].textContent = price;
+        }
+        
         currentOrders[orderCat] = { product: product, price: price };
     })
 }
 
-function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
+function makePurchaseButton(elementName, orderCat, playerCat, priceDisplayArr, suffix){ //todo upgraded price display
     if(typeof(elementName) == 'string'){
         elementName = document.getElementById(elementName);
     }
-    if(typeof(priceDisplay) == 'string'){
-        priceDisplay = document.getElementById(priceDisplay);
+    for(let p=0; p < priceDisplayArr.length; p++){
+        if(typeof(priceDisplayArr[p]) == 'string'){
+            priceDisplayArr[p] = document.getElementById(priceDisplayArr[p]);
+        }
     }
     elementName.addEventListener('click', (event)=>{
         event.preventDefault();
@@ -557,22 +573,27 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
             if(findInArray(player[playerCat], currentOrders[orderCat].product) === false){ // * only purchase product if we don't have it
                 if(player.investmentPoints >= currentOrders[orderCat].price){ // * if we can purchase
                     player.investmentPoints -= currentOrders[orderCat].price; //* ...charge it :)
-                    document.getElementById("pointsRemaining").textContent = player.investmentPoints;
+                    document.getElementById("pointsRemaining").textContent = player.investmentPoints; //todo make input array for this
                     
                     player[playerCat].push(currentOrders[orderCat].product); // * add the product
                     if(orderCat === 'ability'){
                         player["abilityLevels"].push({ name: currentOrders[orderCat].product, level: 1});
                     }
                     if(orderCat === "element"){
-                        loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", "elementPrice", "addPowerClass"); //reset element selector ^_^
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
-                        displayPlayer("playerStats0", "pointsRemaining", player, elements);
+                        loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", priceDisplayArr, "addPowerClass"); //*reset element selector ^_^ //"elementPrice"
+                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility"); // "abilityPrice"
+                        displayPlayer([{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}], ["pointsRemaining"], player);
                     }
                     else if(orderCat === "ability"){
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
-                        displayPlayer("playerStats0", "pointsRemaining", player, elements);
+                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", priceDisplayArr, "addAbility");
+                        displayPlayer([{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}], ["pointsRemaining"], player);
                     }
-                    priceDisplay.textContent = ""; //* reset price display
+                    for(let p=0; p < priceDisplayArr.length; p++){
+                        if(typeof(priceDisplayArr[p]) == 'string'){
+                            priceDisplayArr[p].textContent = ""; //* reset price display
+                        }
+                    }
+                    
                 }
                 else{
                     alert("sorry, but you do not have enough points to research " + currentOrders[orderCat].product);
@@ -581,13 +602,16 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
             else{
                 alert(`you already have that ${orderCat}!`);
                 if(orderCat === "element"){
-                    loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", "elementPrice", "addPowerClass"); //reset element selector ^_^
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
+                    loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", priceDisplayArr, "addPowerClass"); //reset element selector ^_^
+                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility");
                 }
                 else if(orderCat === "ability"){
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", "abilityPrice", "addAbility");
+                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", priceDisplayArr, "addAbility");
                 }
-                priceDisplay.textContent = ""; // * reset price display
+                for(let p=0; p < priceDisplayArr.length; p++){
+                    priceDisplayArr[p].textContent = ""; // * reset price display
+                }
+                
             }
         }
         else{
@@ -600,7 +624,112 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplay){
     })
 }
 
+function makeToggleButton(toggleButton, toggledElementArr, showText, hideText, functObj) {
+    if(typeof(toggleButton) == 'string'){
+        toggleButton = document.getElementById(toggleButton);
+    }
+    for(let g=0; g < toggledElementArr.length; g++){
+        if(typeof(toggledElementArr[g]) == 'string'){
+            toggledElementArr[g] = document.getElementById(toggledElementArr[g]);
+        }
+    }
+
+    toggleButton.addEventListener('click', (event)=>{
+        event.preventDefault();        
+        for(let g=0; g < toggledElementArr.length; g++){
+            alert(toggledElementArr[g]);
+            if(toggledElementArr[g].style.display == "none"){
+                toggledElementArr[g].style.display = 'initial';
+                toggleButton.textContent = hideText;
+            }
+            else{
+                toggledElementArr[g].style.display = "none";
+                toggleButton.textContent = showText;
+            }
+        }
+        
+        if(typeof(functObj) !== undefined){
+            functObj.funct( ...functObj.params);
+        }
+    });
+}
+
+function logTerritory(parentElement, object, kind, stylingObj, noLogList){    
+    //^ uses findInArray, addStyles, removeAllChildren
+    const { Prop, Value, KeyValue, TitleTop } = stylingObj;
+    
+    if(kind === "outside"){ //* useful for testing :)
+        console.log('logging outside object: ');
+        console.log(object);
+    }
+    if(typeof(parentElement) == 'string'){
+        parentElement = document.getElementById(parentElement); //* this is probably the container if "inside"
+    }
+    if(typeof(object) == 'object'){
+        let container, proppy, valley, val;
+        if(kind == "outside"){
+            removeAllChildren(parentElement);
+        }
+        
+        //if(typeof(object) !== HTMLElement){
+            for(let prop in object){
+                //* if there is no noLogList or prop is not found in the noLogList...
+                if((typeof(noLostList) == undefined)||(findInArray(noLogList, prop) == false)){
+                    container = document.createElement("div");
+                    if(stylingObj!== undefined){
+                        container.className = KeyValue.class;
+                        addStyles(container, KeyValue.extra);
+                    }
+                    parentElement.appendChild(container);
+                    val = object[prop]; 
+
+                    proppy = document.createElement("div");
+                    if(stylingObj!== undefined){
+                        proppy.className = Prop.class;
+                        addStyles(proppy, Prop.extra);
+                    }
+                    proppy.textContent += `${prop}: `;
+                    container.appendChild(proppy);
+
+                    if(typeof(val) != 'object'){
+                        valley = document.createElement("div");
+                        if(stylingObj!== undefined){
+                            valley.className = Value.class;
+                            addStyles(valley, Value.extra);
+                        }
+                        valley.textContent = object[prop];
+                        container.appendChild(valley);
+                    }
+                    else{ //* for those with an object inside, so to speak.
+                        const objectContainer = document.createElement("div");
+                        if(stylingObj!== undefined){
+                            objectContainer.className = KeyValue.class;
+                            addStyles(objectContainer, KeyValue.extra);
+                            container.className = TitleTop.class; //* change parent container class! :D
+                            addStyles(container, TitleTop.extra);
+                        }
+                        container.appendChild(objectContainer);
+                        
+
+                        logTerritory(objectContainer, object[prop], "inside", stylingObj, ['el']); //*automatically appends to parent :D //container
+                    }
+                }
+            }
+        //}
+    }
+}
+
 //HELPERS
+function addStyles(element, styleObj){ //* add specialized styling to an element :)
+    if(typeof(element) == 'string'){
+        element = document.getElementById(element);
+    }
+
+    for(let prop in styleObj){
+        element.style[prop] = styleObj[prop];
+    }
+};
+
 function getUpgradeFee(elements, elementName){
     for (let e=0; e < elements.length; e++){
         if(elements[e].name === elementName){
@@ -771,8 +900,11 @@ export {
     displayPlayer, //big functions
     loadPowerClassSelector,
     makePurchaseButton,
-    
-    getUpgradeFee, //helpers
+    logTerritory, 
+    makeToggleButton,
+
+    addStyles, //helpers
+    getUpgradeFee, 
     addUpgradeFees,
     getFullAbility,
     getFullPowerClass,
