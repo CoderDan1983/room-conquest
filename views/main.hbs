@@ -2,16 +2,18 @@
     <div class="topMenu">
         <h1>Room Conquest</h1>
     </div>
-    
-    <div id="side" class="side">
+    <div id="sidebar" class="sidebar">
+        <div class="stickySidebar">
+            <button id="toggleTerritories">Hide Territories</button>
+            <div id="territoryDisplay" class="territorySidebar"></div>
 
-        <button id="toggleTerritories">Hide Territories</button>
-        <div id="territoryDisplay" class="sidebar"></div>
-
-        <button id="togglePlayer">Show Player Stats</button>
-        <div id="playerDisplay" style="display:none;"></div>
-        <div id="pointsRemainingSide"></div>
-        <button id="battleButton">Battle</button>
+            <button id="togglePlayer">Show Player Stats</button>
+            
+            <div id="playerDisplay" style="display:none;"></div>
+            <div id="pointsRemainingDivLabel" style="display:none;">Points Remaining: </div>
+            <div id="pointsRemainingSide" style="display:none;"></div>
+            <button id="battleButton">Battle</button>
+        </div>
     </div>
 
     <div id="main" class="mainContainer">

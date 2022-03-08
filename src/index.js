@@ -1,17 +1,26 @@
 import {
     player, currentOrders, terrainTypes, names, attackStyle, tempZones, elements,
     displayPlayer, loadPowerClassSelector, makePurchaseButton, logTerritory, makeToggleButton, //big functions
+    displayPlayerPiece, setupPlayerMovement,
     addStyles, getUpgradeFee, addUpgradeFees, getFullAbility, getFullPowerClass, getPlayerLevel, //helpers
     allowedAbilities, findInArray, allowedElements, elementPreReqMet, removeAllChildren,
 } from '../modules/gameLibrary_front.js';
 
-const playerStatsDisplayInfo = [{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}];
+const playerStatsDisplayInfo = {
+    version: [{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}],
+    remainDisplay: ["pointsRemaining", "pointsRemainingSide"],
+};
 
 makeToggleButton("playerStatsToggle", ["playerStats0"], "See Player Stats", "Hide Player Stats", 
-{ funct: displayPlayer, params: [playerStatsDisplayInfo, ["pointsRemaining"], player] });
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
 
 
-displayPlayer(playerStatsDisplayInfo, ["pointsRemaining"], player);
+displayPlayer(playerStatsDisplayInfo, player);
+// displayPlayerPiece({column: 0, row: 0 }, player, "board")
+setupPlayerMovement(player, "board", {
+    mixColumn: 0, maxColumn: 0,
+    minRow: 9, maxRow: 9,
+});
 
 
 const startGameB = document.getElementById("startGameB");
@@ -19,6 +28,7 @@ startGameB.addEventListener('click', (event)=>{
     event.preventDefault();
     const board = document.getElementById("board");
     const playerStatsForm = document.getElementById("playerStatsForm");
+    playerStatsForm.style.display = "none";
     board.className = "board";
     board.style.display = "grid"; //* referenced this from the board class
     startGame();
@@ -28,17 +38,23 @@ function startGame(){
 
 }
 
+const purchaseDisplays = {
+    powerClassDisplay: ["elementPrice"],
+    abilityDisplay: ["abilityPrice"],
+    remainingPointsDisplay: ["pointsRemaining", "pointsRemainingSide"],
+}
+
 loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility");
 loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", ["elementPrice"], "addPowerClass");
-makePurchaseButton("buyAbility", "ability", "abilities", ["abilityPrice"], "main"); //* abilities and powerClasses can only be purchased from the main menu?
-makePurchaseButton("buyPowerClass", "element", "branches", ["elementPrice"], "main");
+makePurchaseButton("buyAbility", "ability", "abilities", purchaseDisplays, "main"); //* abilities and powerClasses can only be purchased from the main menu?
+makePurchaseButton("buyPowerClass", "element", "branches", purchaseDisplays, "main");
 
 document.getElementById("pointsRemaining").textContent = player.investmentPoints; //.toString(); //??
 
 //*sidebar 
 makeToggleButton("toggleTerritories", ["territoryDisplay"], "See Territories", "Hide Territories");
-makeToggleButton("togglePlayer", ["playerDisplay"], "See Player Stats", "Hide Player Stats",
-{ funct: displayPlayer, params: [playerStatsDisplayInfo, ["pointsRemaining"], player] });
+makeToggleButton("togglePlayer", ["playerDisplay", "pointsRemainingDivLabel", "pointsRemainingSide"], "See Player Stats", "Hide Player Stats",
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
 
 //other stuff below, so to speak! ^_^
 
@@ -151,12 +167,12 @@ function createTerrain(level, coords){
     const index = Math.floor(Math.random() * terrainTypes.length);
     let terrrain = {};
     terrrain.name = terrainTypes[index].name;
-    terrrain.zone = terrainTypes[index].zone;
+    terrrain.zone = terrainTypes[index].zone; 
     terrrain.level = level;
     terrrain.coords = coords;
 
-    if(terrrain.zone === undefined){
-        terrrain.zone = tempZones[Math.floor(Math.random * returnCreature.length)];
+    if(terrrain.zone === undefined){ //* not all terrains have a default zone.  That is why this is needed ^_^
+        terrrain.zone = tempZones[Math.floor(Math.random() * returnCreature.length)];
     }
     
     return terrrain;
@@ -189,7 +205,7 @@ function returnCreature(terrain){
             damage: withinRange(5, 10),
             speed: withinRange(5, 10),
             perception: withinRange(1, 5),
-            name: `${giveName()}atron`,
+            name: `${giveName()}-atron`,
             elementType: randomFromArray(elements).name,
             attackStyle: randomFromArray(attackStyle),
         };
@@ -223,7 +239,11 @@ function randomFromArray(array){
 let territories = [];
 let enemyList = [];
 
-function createTerritories(rows, columns){
+function createTerritories(board, rows, columns){
+    if(typeof(board) == 'string'){
+        board = document.getElementById(board);
+    }
+
     const lands = rows * columns;
 
     const styling = { //add particular styles here ^_^
@@ -254,13 +274,13 @@ function createTerritories(rows, columns){
     }
     let row = 0; 
     let column = 0;
-    const board = document.getElementById("board");
+    
     for(let a=0; a < lands; a++){
         let terry = createTerritory(a, { row: row, column: column });
         if(board){
             terry.el = document.createElement("div");
             terry.el.className = "territory";
-            terry.el.textContent = `div #${a}`;
+            terry.el.textContent = `${row}, ${column}`;
             terry.el.addEventListener('click', (event)=>{
                 //alert(`${row}, ${column}`); //* this gives inaccurate info, so to speak.
                 console.log(territories[a]);
@@ -278,7 +298,7 @@ function createTerritories(rows, columns){
         }
     }
 }
-createTerritories(10, 10);
+createTerritories("board", 10, 10);
 //console.log(elements);
 
 function giveName(){

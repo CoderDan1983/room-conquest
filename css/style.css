@@ -1,3 +1,7 @@
+body {
+    margin: 0px;
+}
+
 #divBody {
     display: grid;
     grid-template-columns: 7fr 3fr;
@@ -6,18 +10,28 @@
         "topMenu sidebar"
         "mainContainer sidebar"
         "mainContainer sidebar";
+
+    position: relative;
+    top: 0;
 }
 
 .topMenu {
     grid-area: topMenu;
     background-color: rgb(231, 147, 147);
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 .mainContainer {
     grid-area: mainContainer;
     background-color: rgb(138, 138, 251);
+
+    position: relative;
+    top: 0;
 }
 
-.side {
+.sidebar {
     grid-area: sidebar;
     display: grid;
     grid-template-columns: auto;
@@ -25,10 +39,21 @@
     align-content: start;
     /* align-items: center;
     justify-items: center; */
-
+    /* position: relative;
+    top: 0; */
     background-color: yellow;
 }
-.sidebar {
+
+.stickySidebar {
+    display: grid;
+    /* grid-template-columns: auto;
+    grid-template-rows: repeat(3, auto); */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.territorySidebar {
     background-color: rgb(155, 243, 155);
 
     display: grid;
@@ -37,7 +62,11 @@
     align-content: start;
     justify-content: space-evenly;
     padding: 20px 4px;
+
+    position: sticky;
+    top: 0;
 }
+
 .form {
     display: "grid";
     background-color: rgb(187, 187, 187);
@@ -69,12 +98,29 @@
 
     /* width: 1000px; */
     height:  1000px;
+
+    position: relative;
+    top: 0;
+}
+
+.playerPiece {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    height: 10%;
+    width: 10%;
+
+    background-color: blue;
+
+    border-radius: 8px;
+
+    z-index: 10;
 }
 
 .territory {
-    background-color: #fff;
-    border: 1px black solid;
-    color: #000;
+    background-color: #000;
+    border: 1px white solid;
+    color: #fff;
 }
 
 .fogOfWar {

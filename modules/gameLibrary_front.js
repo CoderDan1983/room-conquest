@@ -1,3 +1,5 @@
+//import { compareByInspect } from "chai/lib/chai/utils";
+
 const terrainTypes = [
     { name: "desert", zone: "tropical", effect: [
         { name: "plants", effect: -1 },
@@ -415,28 +417,29 @@ let player = {
     coords: {
         row: 0,
         column: 0,
-    }
+    },
+    piece: null,
 }
 
 let currentOrders = { //holds orders
 
 }
 
-//
-// function displayPlayer(parentElement, investmentRemainingArr, suffix, player, elementArray){
-function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgraded price display
+//displayPlayer(groupArr, investmentRemainingArr, player)
+function displayPlayer(input, player){ //todo upgraded price display
+    const { version, remainDisplay } = input;
 
-    for(let p=0; p < investmentRemainingArr.length; p++){
-        if(typeof(investmentRemainingArr[p]) == 'string'){
-            investmentRemainingArr[p] = document.getElementById(investmentRemainingArr[p]);
+    for(let p=0; p < remainDisplay.length; p++){
+        if(typeof(remainDisplay[p]) == 'string'){
+            remainDisplay[p] = document.getElementById(remainDisplay[p]);
         }
     }
-    for(let g=0; g < groupArr.length; g++){ 
-        if(typeof(groupArr[g].parent) == 'string'){ //*make sure we are referencing all the elements :)
-            groupArr[g].parent = document.getElementById(groupArr[g].parent);
+    for(let g=0; g < version.length; g++){ 
+        if(typeof(version[g].parent) == 'string'){ //*make sure we are referencing all the elements :)
+            version[g].parent = document.getElementById(version[g].parent);
         }
         
-        removeAllChildren(groupArr[g].parent);
+        removeAllChildren(version[g].parent);
         
         let powerContainer, abilitiesContainer, inst, abilityContainer, abilityTitle, abil, upgradeB;
         let power;
@@ -445,9 +448,9 @@ function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgrade
             power = getFullPowerClass(player.branches[b]);
             powerContainer = document.createElement("div"); //container
             powerContainer.className = "powerContainer";
-            powerContainer.id = `powerContainer_${player.branches[b]}_${groupArr[g].suffix}`;
+            powerContainer.id = `powerContainer_${player.branches[b]}_${version[g].suffix}`;
             powerContainer.style.backgroundColor =`${power.color}44`;
-            groupArr[g].parent.appendChild(powerContainer);
+            version[g].parent.appendChild(powerContainer);
 
             inst = document.createElement("div"); //title
             inst.className = "powerTitle";
@@ -465,7 +468,7 @@ function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgrade
                     abilityContainer = document.createElement("div");
                     abilityContainer.className = "abilityContainer";
                     abilityContainer.style.backgroundColor =`${power.color}44`;
-                    abilityContainer.id = `abilityContainer_${ability.name}_${groupArr[g].suffix}`;
+                    abilityContainer.id = `abilityContainer_${ability.name}_${version[g].suffix}`;
                     abilitiesContainer.appendChild(abilityContainer);
 
                     abilityTitle = document.createElement("div");
@@ -486,9 +489,9 @@ function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgrade
                                     if(player.abilityLevels[a].name == ability.name){
                                         player.abilityLevels[a].level++;
                                         player.investmentPoints -= fee;
-                                        for(let p=0; p < investmentRemainingArr.length; p++){
-                                            if(typeof(investmentRemainingArr[p]) == 'string'){
-                                                investmentRemainingArr[p].textContent = player.investmentPoints;
+                                        for(let p=0; p < remainDisplay.length; p++){
+                                            if(typeof(remainDisplay[p]) == 'string'){
+                                                remainDisplay[p].textContent = player.investmentPoints;
                                             }
                                         }
                                         
@@ -497,7 +500,7 @@ function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgrade
                                 }
                                 console.log('logging player: ');
                                 console.log(player);
-                                displayPlayer(groupArr, investmentRemainingArr, player);                           
+                                displayPlayer(input, player);                           
                             }
                             else {
                                 alert("get more points to upgrade!")
@@ -517,6 +520,65 @@ function displayPlayer(groupArr, investmentRemainingArr, player){ //todo upgrade
     }
 }
 
+function displayPlayerPiece(coords, player, board){
+    if(typeof(board) == 'string'){
+        board = document.getElementById(board);
+    }
+    if(player.piece == null){ //* create piece if it doesn't exist ^_^
+        let piece = document.createElement("div");
+        player.piece = piece;
+        piece.className = "playerPiece";
+        piece.textContent = 'player';
+        piece.addEventListener('click', (event)=>{
+            alert(`${player.coords.column}, ${player.coords.row}`);
+        });
+        board.appendChild(piece);
+    }
+    let xP = player.coords.column * 10;
+    let yP = player.coords.row * 10;
+    player.piece.style.top = `${yP}%`;
+    player.piece.style.left = `${xP}%`;
+}
+
+function setupPlayerMovement(player, board, limits){
+    var stopIt = function(e) {
+        e.preventDefault();
+        e.scrollTo(0,0);
+    }
+    document.addEventListener('scroll', stopIt, false);
+    document.addEventListener('mousewheel', stopIt, false);
+    document.addEventListener('touchmove', stopIt, false);
+
+    document.addEventListener('keyup', (event)=>{
+        let dreamCoords = JSON.parse(JSON.stringify(player.coords));
+        let move = false;
+        if(event.key == 'ArrowUp'){
+            dreamCoords.row--;
+        }
+        else if(event.key == 'ArrowDown'){
+            dreamCoords.row++;
+        }
+        else if(event.key == 'ArrowLeft'){
+            dreamCoords.column--;
+        }
+        else if(event.key == 'ArrowRight'){
+            dreamCoords.column++;  
+        }
+
+        if((dreamCoords.row >= limits.minRow)&&(dreamCoords.row <= limits.maxRow)&&
+        (dreamCoords.column >= limits.minColumn)&&(dreamCoords.column <= limits.maxColumn)){
+            move = true;
+        }
+
+        move = true;
+
+        if(move){
+            player.coords = dreamCoords;
+            displayPlayerPiece(dreamCoords, player, board);
+        }
+    });
+
+}
 function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, priceDisplayArr, addName){ //todo upgraded price display
     if(typeof(elementName) == 'string'){
         elementName = document.getElementById(elementName);
@@ -558,42 +620,51 @@ function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, price
     })
 }
 
-function makePurchaseButton(elementName, orderCat, playerCat, priceDisplayArr, suffix){ //todo upgraded price display
-    if(typeof(elementName) == 'string'){
-        elementName = document.getElementById(elementName);
+const localPlayerStatsDisplayInfo = {
+    version: [{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}],
+    remainDisplay: ["pointsRemaining", "pointsRemainingSide"],
+};
+let localPurchaseDisplays = {
+    powerClassDisplay: [],
+    abilityDisplay: [],
+    remainingPointsDisplay: [],
+}
+
+function makePurchaseButton(purchaseButton, orderCat, playerCat, displays, suffix){ //todo upgraded price display
+    if(typeof(purchaseButton) == 'string'){
+        purchaseButton = document.getElementById(purchaseButton);
     }
-    for(let p=0; p < priceDisplayArr.length; p++){
-        if(typeof(priceDisplayArr[p]) == 'string'){
-            priceDisplayArr[p] = document.getElementById(priceDisplayArr[p]);
-        }
-    }
-    elementName.addEventListener('click', (event)=>{
+    let { powerClassDisplay, abilityDisplay, remainingPointsDisplay } = displays;
+
+    powerClassDisplay = HTMLElementArray(powerClassDisplay);
+    abilityDisplay = HTMLElementArray(abilityDisplay);
+    remainingPointsDisplay = HTMLElementArray(remainingPointsDisplay);
+
+    purchaseButton.addEventListener('click', (event)=>{
         event.preventDefault();
         if(currentOrders[orderCat]){  
             if(findInArray(player[playerCat], currentOrders[orderCat].product) === false){ // * only purchase product if we don't have it
                 if(player.investmentPoints >= currentOrders[orderCat].price){ // * if we can purchase
                     player.investmentPoints -= currentOrders[orderCat].price; //* ...charge it :)
-                    document.getElementById("pointsRemaining").textContent = player.investmentPoints; //todo make input array for this
-                    
+
+                    changeTextOfHTMLArray(remainingPointsDisplay, player.investmentPoints);
                     player[playerCat].push(currentOrders[orderCat].product); // * add the product
                     if(orderCat === 'ability'){
                         player["abilityLevels"].push({ name: currentOrders[orderCat].product, level: 1});
                     }
                     if(orderCat === "element"){
-                        loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", priceDisplayArr, "addPowerClass"); //*reset element selector ^_^ //"elementPrice"
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility"); // "abilityPrice"
-                        displayPlayer([{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}], ["pointsRemaining"], player);
+                        loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", powerClassDisplay, "addPowerClass"); //*reset element selector ^_^ //"elementPrice"
+                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility"); // "abilityPrice"
+                        displayPlayer(localPlayerStatsDisplayInfo, player);
+
+                        changeTextOfHTMLArray(powerClassDisplay, ""); //* reset price display
                     }
                     else if(orderCat === "ability"){
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", priceDisplayArr, "addAbility");
-                        displayPlayer([{parent: "playerStats0", suffix: "main"}, {parent: "playerDisplay", suffix: "side"}], ["pointsRemaining"], player);
+                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
+                        displayPlayer(localPlayerStatsDisplayInfo, player);
                     }
-                    for(let p=0; p < priceDisplayArr.length; p++){
-                        if(typeof(priceDisplayArr[p]) == 'string'){
-                            priceDisplayArr[p].textContent = ""; //* reset price display
-                        }
-                    }
-                    
+
+                    changeTextOfHTMLArray(abilityDisplay, ""); //* reset price display
                 }
                 else{
                     alert("sorry, but you do not have enough points to research " + currentOrders[orderCat].product);
@@ -602,16 +673,16 @@ function makePurchaseButton(elementName, orderCat, playerCat, priceDisplayArr, s
             else{
                 alert(`you already have that ${orderCat}!`);
                 if(orderCat === "element"){
-                    loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", priceDisplayArr, "addPowerClass"); //reset element selector ^_^
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility");
+                    loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", powerClassDisplay, "addPowerClass"); //reset element selector ^_^
+                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
+
+                    changeTextOfHTMLArray(powerClassDisplay, ""); //* reset price display
                 }
                 else if(orderCat === "ability"){
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", priceDisplayArr, "addAbility");
+                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
                 }
-                for(let p=0; p < priceDisplayArr.length; p++){
-                    priceDisplayArr[p].textContent = ""; // * reset price display
-                }
-                
+
+                changeTextOfHTMLArray(abilityDisplay, ""); //* reset price display
             }
         }
         else{
@@ -628,7 +699,7 @@ function makeToggleButton(toggleButton, toggledElementArr, showText, hideText, f
     if(typeof(toggleButton) == 'string'){
         toggleButton = document.getElementById(toggleButton);
     }
-    for(let g=0; g < toggledElementArr.length; g++){
+    for(let g=0; g < toggledElementArr.length; g++){ //* things that are hidden on toggle ^_^
         if(typeof(toggledElementArr[g]) == 'string'){
             toggledElementArr[g] = document.getElementById(toggledElementArr[g]);
         }
@@ -637,7 +708,6 @@ function makeToggleButton(toggleButton, toggledElementArr, showText, hideText, f
     toggleButton.addEventListener('click', (event)=>{
         event.preventDefault();        
         for(let g=0; g < toggledElementArr.length; g++){
-            alert(toggledElementArr[g]);
             if(toggledElementArr[g].style.display == "none"){
                 toggledElementArr[g].style.display = 'initial';
                 toggleButton.textContent = hideText;
@@ -648,7 +718,10 @@ function makeToggleButton(toggleButton, toggledElementArr, showText, hideText, f
             }
         }
         
-        if(typeof(functObj) !== undefined){
+        if(typeof(functObj) !== 'undefined'){
+            console.log(typeof(functObj));
+            console.log(functObj);
+            
             functObj.funct( ...functObj.params);
         }
     });
@@ -716,6 +789,22 @@ function logTerritory(parentElement, object, kind, stylingObj, noLogList){
                 }
             }
         //}
+    }
+}
+
+//unsent helpers: 
+function HTMLElementArray(array){ //* returns an array of all html elements :D
+    for(let a=0; a < array.length; a++){
+        if(typeof(array[a]) == 'string'){
+            array[a] = document.getElementById(array[a]);
+        }
+    }
+    return array;
+}
+
+function changeTextOfHTMLArray(array, text){
+    for(let p=0; p < array.length; p++){
+        array[p].textContent = text; //* reset price display
     }
 }
 
@@ -902,6 +991,9 @@ export {
     makePurchaseButton,
     logTerritory, 
     makeToggleButton,
+
+    displayPlayerPiece,
+    setupPlayerMovement, 
 
     addStyles, //helpers
     getUpgradeFee, 
