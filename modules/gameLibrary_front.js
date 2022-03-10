@@ -394,6 +394,33 @@ const elements = [
     },
 ];
 
+const playerSidebarStyling = { //add particular styles here ^_^
+    Prop: {
+        class: "prop",
+        extra: {
+
+        }
+    },
+    Value: {
+        class: "value",
+        extra: {
+
+        }
+    },
+    KeyValue: {
+        class: "keyValue",
+        extra: {
+            backgroundColor: "#bbbbbb",
+        }
+    },
+    TitleTop: {
+        class: "titleTopContainer",
+        extra: {
+            backgroundColor: "#dddddd",
+        }
+    },
+}
+
 for(let e=0; e < elements.length; e++){ // * add/modify elements array ^_^
     let parent = elements[e].name;
     let abil = elements[e].abilities;
@@ -414,11 +441,23 @@ let player = {
     abilities: [],
     abilityLevels: [],
     investmentPoints: 10,
+    energy: 10,
+    energyRR: 10,
+    healthRR: 5,
     coords: {
         row: 0,
         column: 0,
     },
     piece: null,
+}
+
+let playerArray = [];
+let playerIndex = 0;
+
+function createPlayerArray(num){
+    for(let n=0; n < num; n++){
+        playerArray.push(player);
+    }
 }
 
 let currentOrders = { //holds orders
@@ -727,7 +766,7 @@ function makeToggleButton(toggleButton, toggledElementArr, showText, hideText, f
     });
 }
 
-function logTerritory(parentElement, object, kind, stylingObj, noLogList){    
+function objToHTML(parentElement, object, kind, stylingObj, noLogList){    
     //^ uses findInArray, addStyles, removeAllChildren
     const { Prop, Value, KeyValue, TitleTop } = stylingObj;
     
@@ -784,7 +823,7 @@ function logTerritory(parentElement, object, kind, stylingObj, noLogList){
                         container.appendChild(objectContainer);
                         
 
-                        logTerritory(objectContainer, object[prop], "inside", stylingObj, ['el']); //*automatically appends to parent :D //container
+                        objToHTML(objectContainer, object[prop], "inside", stylingObj, ['el']); //*automatically appends to parent :D //container
                     }
                 }
             }
@@ -985,15 +1024,20 @@ export {
     attackStyle,
     tempZones,
     elements,
+    playerSidebarStyling,
+    playerArray, 
+    playerIndex,
 
     displayPlayer, //big functions
     loadPowerClassSelector,
     makePurchaseButton,
-    logTerritory, 
+    objToHTML, 
     makeToggleButton,
 
+    createPlayerArray,
     displayPlayerPiece,
     setupPlayerMovement, 
+    
 
     addStyles, //helpers
     getUpgradeFee, 

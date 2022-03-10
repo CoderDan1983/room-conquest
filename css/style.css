@@ -196,3 +196,11 @@ body {
 .value {
     /* background-color: aqua; */
 }
+
+#playerActions {
+    background-color: #999999;
+}
+
+#playerDisplay {
+    background-color: #fff;
+}

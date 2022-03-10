@@ -1,7 +1,8 @@
 import {
-    player, currentOrders, terrainTypes, names, attackStyle, tempZones, elements,
-    displayPlayer, loadPowerClassSelector, makePurchaseButton, logTerritory, makeToggleButton, //big functions
-    displayPlayerPiece, setupPlayerMovement,
+    player, currentOrders, terrainTypes, names, attackStyle, tempZones, elements, playerSidebarStyling,
+    playerArray, playerIndex,
+    displayPlayer, loadPowerClassSelector, makePurchaseButton, objToHTML, makeToggleButton, //big functions
+    createPlayerArray, displayPlayerPiece, setupPlayerMovement,
     addStyles, getUpgradeFee, addUpgradeFees, getFullAbility, getFullPowerClass, getPlayerLevel, //helpers
     allowedAbilities, findInArray, allowedElements, elementPreReqMet, removeAllChildren,
 } from '../modules/gameLibrary_front.js';
@@ -13,6 +14,9 @@ const playerStatsDisplayInfo = {
 
 makeToggleButton("playerStatsToggle", ["playerStats0"], "See Player Stats", "Hide Player Stats", 
 { funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
+
+objToHTML("displayPlayerObj", player, "outside", playerSidebarStyling, 
+['branches', 'abilities', 'abilityLevels', 'investmentPoints', 'coords', 'piece']);
 
 
 displayPlayer(playerStatsDisplayInfo, player);
@@ -288,7 +292,7 @@ function createTerritories(board, rows, columns){
             terry.el.addEventListener('click', (event)=>{
                 //alert(`${row}, ${column}`); //* this gives inaccurate info, so to speak.
                 console.log(territories[a]);
-                logTerritory("territoryDisplay", territories[a], "outside", styling, ['el']);
+                objToHTML("territoryDisplay", territories[a], "outside", styling, ['el']);
             });
             board.appendChild(terry.el);
         }
@@ -302,6 +306,8 @@ function createTerritories(board, rows, columns){
         }
     }
 }
+
+
 createTerritories("board", 10, 10);
 //console.log(elements);
 
@@ -321,4 +327,6 @@ function giveName(){
 // enableScrollingB.addEventListener('click', (event)=>{
 //     enableScroll();
 // });
+
+
 
