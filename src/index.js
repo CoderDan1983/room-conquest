@@ -18,8 +18,8 @@ makeToggleButton("playerStatsToggle", ["playerStats0"], "See Player Stats", "Hid
 displayPlayer(playerStatsDisplayInfo, player);
 // displayPlayerPiece({column: 0, row: 0 }, player, "board")
 setupPlayerMovement(player, "board", {
-    mixColumn: 0, maxColumn: 0,
-    minRow: 9, maxRow: 9,
+    minColumn: 0, maxColumn: 9,
+    minRow: 0, maxRow: 9,
 });
 
 
@@ -55,6 +55,10 @@ document.getElementById("pointsRemaining").textContent = player.investmentPoints
 makeToggleButton("toggleTerritories", ["territoryDisplay"], "See Territories", "Hide Territories");
 makeToggleButton("togglePlayer", ["playerDisplay", "pointsRemainingDivLabel", "pointsRemainingSide"], "See Player Stats", "Hide Player Stats",
 { funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
+makeToggleButton("toggleActions", ["playerActions"], "See Player Actions", "Hide Player Actions");
+
+
+
 
 //other stuff below, so to speak! ^_^
 
@@ -276,7 +280,7 @@ function createTerritories(board, rows, columns){
     let column = 0;
     
     for(let a=0; a < lands; a++){
-        let terry = createTerritory(a, { row: row, column: column });
+        let terry = createTerritory(a, { row: row, column: column }); //* this holds territory information ^_^
         if(board){
             terry.el = document.createElement("div");
             terry.el.className = "territory";
@@ -307,4 +311,14 @@ function giveName(){
     names.splice(roll, 1); //removes name!
     return name;
 }
+
+//taken from 
+// const disableScrollingB = document.getElementById("disableScrolling");
+// const enableScrollingB = document.getElementById("enableScrolling");
+// disableScrollingB.addEventListener('click', (event)=>{
+//     disableScroll();
+// });
+// enableScrollingB.addEventListener('click', (event)=>{
+//     enableScroll();
+// });
 

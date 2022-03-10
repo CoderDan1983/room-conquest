@@ -12,7 +12,27 @@
             <div id="playerDisplay" style="display:none;"></div>
             <div id="pointsRemainingDivLabel" style="display:none;">Points Remaining: </div>
             <div id="pointsRemainingSide" style="display:none;"></div>
+
+            <button id="toggleActions">Hide Player Actions</button>
+            <div id="playerActions">
+                <div>Turns Passed: </div>
+                <div id="turnsPassed"></div>
+
+                <div>Health Left: </div>
+                <div id="healthLeft"></div>
+
+                <div>Actions Left: </div>
+                <div id="actionsLeft"></div>
+
+                <button id="scanTerritory">Scan Territory</button>
+                <button id="endTurn">End Turn</button>
+            </div>
             <button id="battleButton">Battle</button>
+
+            <p>
+                <button id="disableScrolling" onclick="disableScroll()">Disable Scrolling</button>
+                <button id="enableScrolling" onclick="enableScroll()">Enable Scrolling</button>
+            </p>
         </div>
     </div>
 
@@ -76,6 +96,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    //https://www.geeksforgeeks.org/how-to-disable-scrolling-temporarily-using-javascript/#:~:text=Scrolling%20can%20be%20disabled%20using%20JavaScript%20using%202,scroll%20happens%20will%20effectively%20disable%20the%20scroll%20effect.
+    function disableScroll() {
+    // Get the current page scroll position
+    scrollTop = 
+    window.pageYOffset || document.documentElement.scrollTop;
+    scrollLeft = 
+    window.pageXOffset || document.documentElement.scrollLeft,
+
+        // if any scroll is attempted,
+        // set this to the previous value
+        window.onscroll = function() {
+            window.scrollTo(scrollLeft, scrollTop);
+        };
+    }
+
+    function enableScroll() {
+        window.onscroll = function() {};
+    }
+</script>
 
 {{!--  type="module" --}}
 <script type="module" src="./src/index.js"></script>

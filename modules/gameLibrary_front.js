@@ -541,13 +541,13 @@ function displayPlayerPiece(coords, player, board){
 }
 
 function setupPlayerMovement(player, board, limits){
-    var stopIt = function(e) {
-        e.preventDefault();
-        e.scrollTo(0,0);
-    }
-    document.addEventListener('scroll', stopIt, false);
-    document.addEventListener('mousewheel', stopIt, false);
-    document.addEventListener('touchmove', stopIt, false);
+    // var stopIt = function(e) { //https://dirask.com/posts/JavaScript-stop-page-scroll-with-e-preventDefault-Dl5z4p
+    //     e.preventDefault();
+    //     //e.scrollTo(0,0);
+    // }
+    // document.addEventListener('scroll', stopIt, false);
+    // document.addEventListener('mousewheel', stopIt, false);
+    // document.addEventListener('touchmove', stopIt, false);
 
     document.addEventListener('keyup', (event)=>{
         let dreamCoords = JSON.parse(JSON.stringify(player.coords));
@@ -564,13 +564,13 @@ function setupPlayerMovement(player, board, limits){
         else if(event.key == 'ArrowRight'){
             dreamCoords.column++;  
         }
-
+        // console.log('in terms of direction vs limits we have: ');
+        // console.log(`${dreamCoords.row} (row) vs ${limits.minRow} (min), ${limits.maxRow} (max)`);
+        // console.log(`${dreamCoords.column} (column) vs ${limits.minColumn} (min), ${limits.maxColumn} (max)`);
         if((dreamCoords.row >= limits.minRow)&&(dreamCoords.row <= limits.maxRow)&&
         (dreamCoords.column >= limits.minColumn)&&(dreamCoords.column <= limits.maxColumn)){
             move = true;
         }
-
-        move = true;
 
         if(move){
             player.coords = dreamCoords;
