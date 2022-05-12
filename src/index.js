@@ -13,15 +13,15 @@ const playerStatsDisplayInfo = {
 };
 
 makeToggleButton("playerStatsToggle", ["playerStats0"], "See Player Stats", "Hide Player Stats", 
-{ funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, playerArray[playerIndex]] });
 
-objToHTML("displayPlayerObj", player, "outside", playerSidebarStyling, 
+objToHTML("displayPlayerObj", playerArray[playerIndex], "outside", playerSidebarStyling, 
 ['branches', 'abilities', 'abilityLevels', 'investmentPoints', 'coords', 'piece']);
 
 
-displayPlayer(playerStatsDisplayInfo, player);
-// displayPlayerPiece({column: 0, row: 0 }, player, "board")
-setupPlayerMovement(player, "board", {
+displayPlayer(playerStatsDisplayInfo, playerArray[playerIndex]);
+
+setupPlayerMovement(playerArray[playerIndex], "board", {
     minColumn: 0, maxColumn: 9,
     minRow: 0, maxRow: 9,
 });
@@ -48,21 +48,19 @@ const purchaseDisplays = {
     remainingPointsDisplay: ["pointsRemaining", "pointsRemainingSide"],
 }
 
-loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", ["abilityPrice"], "addAbility");
-loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", ["elementPrice"], "addPowerClass");
-makePurchaseButton("buyAbility", "ability", "abilities", purchaseDisplays, "main"); //* abilities and powerClasses can only be purchased from the main menu?
-makePurchaseButton("buyPowerClass", "element", "branches", purchaseDisplays, "main");
+//*initialization (?)
+loadPowerClassSelector("addAbility", allowedAbilities, { currentPlayer: playerArray[playerIndex], array: elements }, "ability", ["abilityPrice"], "addAbility");
+loadPowerClassSelector("addPowerClass", allowedElements, { currentPlayer: playerArray[playerIndex], array: elements }, "element", ["elementPrice"], "addPowerClass");
+makePurchaseButton("buyAbility", playerArray[playerIndex], "ability", "abilities", purchaseDisplays, "main"); //* abilities and powerClasses can only be purchased from the main menu?
+makePurchaseButton("buyPowerClass", playerArray[playerIndex], "element", "branches", purchaseDisplays, "main");
 
-document.getElementById("pointsRemaining").textContent = player.investmentPoints; //.toString(); //??
+document.getElementById("pointsRemaining").textContent = playerArray[playerIndex].investmentPoints; //.toString(); //??
 
 //*sidebar 
 makeToggleButton("toggleTerritories", ["territoryDisplay"], "See Territories", "Hide Territories");
 makeToggleButton("togglePlayer", ["playerDisplay", "pointsRemainingDivLabel", "pointsRemainingSide"], "See Player Stats", "Hide Player Stats",
-{ funct: displayPlayer, params: [playerStatsDisplayInfo, player] });
+{ funct: displayPlayer, params: [playerStatsDisplayInfo, playerArray[playerIndex]] });
 makeToggleButton("toggleActions", ["playerActions"], "See Player Actions", "Hide Player Actions");
-
-
-
 
 //other stuff below, so to speak! ^_^
 

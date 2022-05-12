@@ -460,12 +460,13 @@ function createPlayerArray(num){
     }
 }
 
+createPlayerArray(1);
+
 let currentOrders = { //holds orders
 
 }
 
-//displayPlayer(groupArr, investmentRemainingArr, player)
-function displayPlayer(input, player){ //todo upgraded price display
+function displayPlayer(input, currentPlayer){ //todo upgraded price display
     const { version, remainDisplay } = input;
 
     for(let p=0; p < remainDisplay.length; p++){
@@ -483,27 +484,27 @@ function displayPlayer(input, player){ //todo upgraded price display
         let powerContainer, abilitiesContainer, inst, abilityContainer, abilityTitle, abil, upgradeB;
         let power;
 
-        for(let b=0; b < player.branches.length; b++){
-            power = getFullPowerClass(player.branches[b]);
+        for(let b=0; b < currentPlayer.branches.length; b++){
+            power = getFullPowerClass(currentPlayer.branches[b]);
             powerContainer = document.createElement("div"); //container
             powerContainer.className = "powerContainer";
-            powerContainer.id = `powerContainer_${player.branches[b]}_${version[g].suffix}`;
+            powerContainer.id = `powerContainer_${currentPlayer.branches[b]}_${version[g].suffix}`;
             powerContainer.style.backgroundColor =`${power.color}44`;
             version[g].parent.appendChild(powerContainer);
 
             inst = document.createElement("div"); //title
             inst.className = "powerTitle";
-            inst.textContent = player.branches[b];
+            inst.textContent = currentPlayer.branches[b];
             powerContainer.appendChild(inst);
 
             abilitiesContainer = document.createElement("div");
             abilitiesContainer.className = "abilitiesContainer";
             powerContainer.appendChild(abilitiesContainer);
 
-            for(let a=0; a < player.abilities.length; a++){
-                const ability = getFullAbility(player.abilities[a]); //* this gets default stats.
-                let playerLevel = getPlayerLevel(ability.name); //* this gets player's real level for that ability!
-                if(player.branches[b] == ability.parent){
+            for(let a=0; a < currentPlayer.abilities.length; a++){
+                const ability = getFullAbility(currentPlayer.abilities[a]); //* this gets default stats.
+                let playerLevel = getPlayerLevel(currentPlayer, ability.name); //* this gets currentPlayer's real level for that ability!
+                if(currentPlayer.branches[b] == ability.parent){
                     abilityContainer = document.createElement("div");
                     abilityContainer.className = "abilityContainer";
                     abilityContainer.style.backgroundColor =`${power.color}44`;
@@ -519,27 +520,27 @@ function displayPlayer(input, player){ //todo upgraded price display
                     upgradeB.addEventListener('click', (event)=>{
                         event.preventDefault();
                         
-                        let level = getPlayerLevel(ability.name);
+                        let level = getPlayerLevel(currentPlayer, ability.name);
                         const fee = getFullAbility(ability.name).upgradeFee;
                         if(level < 10){
-                            if(player.investmentPoints >= fee){
+                            if(currentPlayer.investmentPoints >= fee){
                                 alert(`upgrade ${ability.name} to level ${level + 1} for ${ability.upgradeFee} points?`);
-                                for(let a=0; a < player.abilityLevels.length; a++){
-                                    if(player.abilityLevels[a].name == ability.name){
-                                        player.abilityLevels[a].level++;
-                                        player.investmentPoints -= fee;
+                                for(let a=0; a < currentPlayer.abilityLevels.length; a++){
+                                    if(currentPlayer.abilityLevels[a].name == ability.name){
+                                        currentPlayer.abilityLevels[a].level++;
+                                        currentPlayer.investmentPoints -= fee;
                                         for(let p=0; p < remainDisplay.length; p++){
                                             if(typeof(remainDisplay[p]) == 'string'){
-                                                remainDisplay[p].textContent = player.investmentPoints;
+                                                remainDisplay[p].textContent = currentPlayer.investmentPoints;
                                             }
                                         }
                                         
                                         break;
                                     }
                                 }
-                                console.log('logging player: ');
-                                console.log(player);
-                                displayPlayer(input, player);                           
+                                console.log('logging currentPlayer: ');
+                                console.log(currentPlayer);
+                                displayPlayer(input, currentPlayer);                           
                             }
                             else {
                                 alert("get more points to upgrade!")
@@ -559,27 +560,27 @@ function displayPlayer(input, player){ //todo upgraded price display
     }
 }
 
-function displayPlayerPiece(coords, player, board){
+function displayPlayerPiece(coords, currentPlayer, board){
     if(typeof(board) == 'string'){
         board = document.getElementById(board);
     }
-    if(player.piece == null){ //* create piece if it doesn't exist ^_^
+    if(currentPlayer.piece == null){ //* create piece if it doesn't exist ^_^
         let piece = document.createElement("div");
-        player.piece = piece;
+        currentPlayer.piece = piece;
         piece.className = "playerPiece";
         piece.textContent = 'player';
         piece.addEventListener('click', (event)=>{
-            alert(`${player.coords.column}, ${player.coords.row}`);
+            alert(`${currentPlayer.coords.column}, ${currentPlayer.coords.row}`);
         });
         board.appendChild(piece);
     }
-    let xP = player.coords.column * 10;
-    let yP = player.coords.row * 10;
-    player.piece.style.top = `${yP}%`;
-    player.piece.style.left = `${xP}%`;
+    let xP = currentPlayer.coords.column * 10;
+    let yP = currentPlayer.coords.row * 10;
+    currentPlayer.piece.style.top = `${yP}%`;
+    currentPlayer.piece.style.left = `${xP}%`;
 }
 
-function setupPlayerMovement(player, board, limits){
+function setupPlayerMovement(currentPlayer, board, limits){
     // var stopIt = function(e) { //https://dirask.com/posts/JavaScript-stop-page-scroll-with-e-preventDefault-Dl5z4p
     //     e.preventDefault();
     //     //e.scrollTo(0,0);
@@ -589,7 +590,7 @@ function setupPlayerMovement(player, board, limits){
     // document.addEventListener('touchmove', stopIt, false);
 
     document.addEventListener('keyup', (event)=>{
-        let dreamCoords = JSON.parse(JSON.stringify(player.coords));
+        let dreamCoords = JSON.parse(JSON.stringify(currentPlayer.coords));
         let move = false;
         if(event.key == 'ArrowUp'){
             dreamCoords.row--;
@@ -612,13 +613,13 @@ function setupPlayerMovement(player, board, limits){
         }
 
         if(move){
-            player.coords = dreamCoords;
-            displayPlayerPiece(dreamCoords, player, board);
+            currentPlayer.coords = dreamCoords;
+            displayPlayerPiece(dreamCoords, currentPlayer, board);
         }
     });
 
 }
-function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, priceDisplayArr, addName){ //todo upgraded price display
+function loadPowerClassSelector(elementName, arrayFilter, filterObj, orderCat, priceDisplayArr, addName){ //todo upgraded price display
     if(typeof(elementName) == 'string'){
         elementName = document.getElementById(elementName);
     }
@@ -628,7 +629,7 @@ function loadPowerClassSelector(elementName, arrayFilter, array, orderCat, price
         }
     }
     
-    const orderableSet = arrayFilter(array); // * get what elements are available for purchase //, player.investmentPoints
+    const orderableSet = arrayFilter(filterObj.currentPlayer, filterObj.array); // * get what elements are available for purchase //, currentPlayer.investmentPoints
     
     removeAllChildren(addName);
     let option;
@@ -669,7 +670,7 @@ let localPurchaseDisplays = {
     remainingPointsDisplay: [],
 }
 
-function makePurchaseButton(purchaseButton, orderCat, playerCat, displays, suffix){ //todo upgraded price display
+function makePurchaseButton(purchaseButton, currentPlayer, orderCat, playerCat, displays, suffix){ //todo upgraded price display
     if(typeof(purchaseButton) == 'string'){
         purchaseButton = document.getElementById(purchaseButton);
     }
@@ -682,25 +683,25 @@ function makePurchaseButton(purchaseButton, orderCat, playerCat, displays, suffi
     purchaseButton.addEventListener('click', (event)=>{
         event.preventDefault();
         if(currentOrders[orderCat]){  
-            if(findInArray(player[playerCat], currentOrders[orderCat].product) === false){ // * only purchase product if we don't have it
-                if(player.investmentPoints >= currentOrders[orderCat].price){ // * if we can purchase
-                    player.investmentPoints -= currentOrders[orderCat].price; //* ...charge it :)
+            if(findInArray(currentPlayer[playerCat], currentOrders[orderCat].product) === false){ // * only purchase product if we don't have it
+                if(currentPlayer.investmentPoints >= currentOrders[orderCat].price){ // * if we can purchase
+                    currentPlayer.investmentPoints -= currentOrders[orderCat].price; //* ...charge it :)
 
-                    changeTextOfHTMLArray(remainingPointsDisplay, player.investmentPoints);
-                    player[playerCat].push(currentOrders[orderCat].product); // * add the product
+                    changeTextOfHTMLArray(remainingPointsDisplay, currentPlayer.investmentPoints);
+                    currentPlayer[playerCat].push(currentOrders[orderCat].product); // * add the product
                     if(orderCat === 'ability'){
-                        player["abilityLevels"].push({ name: currentOrders[orderCat].product, level: 1});
+                        currentPlayer["abilityLevels"].push({ name: currentOrders[orderCat].product, level: 1});
                     }
                     if(orderCat === "element"){
-                        loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", powerClassDisplay, "addPowerClass"); //*reset element selector ^_^ //"elementPrice"
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility"); // "abilityPrice"
-                        displayPlayer(localPlayerStatsDisplayInfo, player);
+                        loadPowerClassSelector("addPowerClass", allowedElements, { currentPlayer: currentPlayer, array: elements }, "element", powerClassDisplay, "addPowerClass"); //*reset element selector ^_^ //"elementPrice"
+                        loadPowerClassSelector("addAbility", allowedAbilities, { currentPlayer: currentPlayer, array: elements }, "ability", abilityDisplay, "addAbility"); // "abilityPrice"
+                        displayPlayer(localPlayerStatsDisplayInfo, currentPlayer);
 
                         changeTextOfHTMLArray(powerClassDisplay, ""); //* reset price display
                     }
                     else if(orderCat === "ability"){
-                        loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
-                        displayPlayer(localPlayerStatsDisplayInfo, player);
+                        loadPowerClassSelector("addAbility", allowedAbilities, { currentPlayer: currentPlayer, array: elements }, "ability", abilityDisplay, "addAbility");
+                        displayPlayer(localPlayerStatsDisplayInfo, currentPlayer);
                     }
 
                     changeTextOfHTMLArray(abilityDisplay, ""); //* reset price display
@@ -712,13 +713,13 @@ function makePurchaseButton(purchaseButton, orderCat, playerCat, displays, suffi
             else{
                 alert(`you already have that ${orderCat}!`);
                 if(orderCat === "element"){
-                    loadPowerClassSelector("addPowerClass", allowedElements, elements, "element", powerClassDisplay, "addPowerClass"); //reset element selector ^_^
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
+                    loadPowerClassSelector("addPowerClass", allowedElements, { currentPlayer: currentPlayer, array: elements }, "element", powerClassDisplay, "addPowerClass"); //reset element selector ^_^
+                    loadPowerClassSelector("addAbility", allowedAbilities, { currentPlayer: currentPlayer, array: elements }, "ability", abilityDisplay, "addAbility");
 
                     changeTextOfHTMLArray(powerClassDisplay, ""); //* reset price display
                 }
                 else if(orderCat === "ability"){
-                    loadPowerClassSelector("addAbility", allowedAbilities, elements, "ability", abilityDisplay, "addAbility");
+                    loadPowerClassSelector("addAbility", allowedAbilities, { currentPlayer: currentPlayer, array: elements }, "ability", abilityDisplay, "addAbility");
                 }
 
                 changeTextOfHTMLArray(abilityDisplay, ""); //* reset price display
@@ -728,8 +729,8 @@ function makePurchaseButton(purchaseButton, orderCat, playerCat, displays, suffi
             alert('please select an element to purchase :) ');
         }
         if(orderCat == "ability"){ // * to keep all the clickers from going off.  ^_^
-            console.log('After purchase, player is: ');
-            console.log(player);
+            console.log('After purchase, currentPlayer is: ');
+            console.log(currentPlayer);
         }
     })
 }
@@ -823,7 +824,7 @@ function objToHTML(parentElement, object, kind, stylingObj, noLogList){
                         container.appendChild(objectContainer);
                         
 
-                        objToHTML(objectContainer, object[prop], "inside", stylingObj, ['el']); //*automatically appends to parent :D //container
+                        objToHTML(objectContainer, object[prop], "inside", stylingObj, noLogList); //*automatically appends to parent :D //container
                     }
                 }
             }
@@ -902,19 +903,19 @@ function getFullPowerClass(name){
     }
 }
 
-function getPlayerLevel(name){
+function getPlayerLevel(currentPlayer, name){ //todo is this ever used in index.js???
     let level = 0;
-    for(let a=0; a < player.abilityLevels.length; a++){
-        if(player.abilityLevels[a].name == name){
-            level = player.abilityLevels[a].level;
+    for(let a=0; a < currentPlayer.abilityLevels.length; a++){
+        if(currentPlayer.abilityLevels[a].name == name){
+            level = currentPlayer.abilityLevels[a].level;
         }
     }
     return level;
 }
 
-function allowedAbilities(array){
-    let playerBranches = player.branches;
-    let currentAbilities = player.abilities;
+function allowedAbilities(currentPlayer, array){
+    let playerBranches = currentPlayer.branches;
+    let currentAbilities = currentPlayer.abilities;
     let abilityList = [];
     let powerClass = "";
     let miniAbilList;
@@ -924,9 +925,9 @@ function allowedAbilities(array){
         powerClass = array[a].name;
         if(Array.isArray(miniAbilList)){
             for(let m=0; m < miniAbilList.length; m++){ // * go through ability lists ^_^ 
-                if(findInArray(currentAbilities, miniAbilList[m].name) == false){ // * if player doesn't have this ability
+                if(findInArray(currentAbilities, miniAbilList[m].name) == false){ // * if currentPlayer doesn't have this ability
                     if((miniAbilList[m].req === undefined)){ // * if there is no defined requirement 
-                        // * ...and player has powerClass in their player branches :D
+                        // * ...and currentPlayer has powerClass in their currentPlayer branches :D
                         if(findInArray(playerBranches, powerClass)){
                             abilityList.push(miniAbilList[m]);
                         }
@@ -966,30 +967,30 @@ function findInArray(array, value, inThisProp){
     return false;
 }
 
-
-function allowedElements(elements){ // * return the allowed powers ^_^ //, remainingPoints
+//changed currentPlayer (1st round?) to here :D
+function allowedElements(currentPlayer, elements){ // * return the allowed powers ^_^ //, remainingPoints
     let allowed = [];
     for(let e=0; e < elements.length; e++){
-        if(elementPreReqMet(elements[e])
+        if(elementPreReqMet(currentPlayer, elements[e])
         //&&(elements[e].upgradeFee <= remainingPoints)
-        &&(findInArray(player.branches, elements[e].name) == false)){
+        &&(findInArray(currentPlayer.branches, elements[e].name) == false)){
             allowed.push(elements[e]);
         }
     }
     return allowed;
 }
 
-function elementPreReqMet(element){ //seems to be working :D
-    for(let b=0; b < player.branches.length; b++){
+function elementPreReqMet(currentPlayer, element){ //seems to be working :D
+    for(let b=0; b < currentPlayer.branches.length; b++){
         if(Array.isArray(element.req)){
             for(let r=0; r < element.req.length; r++){
-                if(element.req[r] === player.branches[b]){
+                if(element.req[r] === currentPlayer.branches[b]){
                     return true;
                 }
             }
         }
         else{
-            if(element.req === player.branches[b]){
+            if(element.req === currentPlayer.branches[b]){
                 return true;
             }
         } 
